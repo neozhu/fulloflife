@@ -1,0 +1,76 @@
+{
+  "version": "4.5",
+  "lists": [
+    {
+      "title": "Welcome",
+      "href": "aspnetcore_welcome.html",
+      "icon": "fal fa-graduation-cap",
+      "roles": []
+    },
+    {
+      "title": "CRM",
+      "icon": "fal fa-cubes",
+      "roles": [ "Admin", "Basic" ],
+      "items": [
+        {
+          "title": "Customers",
+          "href": "customers_index.html",
+          "roles": []
+        }
+      ]
+    },
+    {
+      "title": "Documents",
+      "icon": "fal fa-paperclip",
+      "roles": [ "Admin", "Basic" ],
+      "items": [
+        {
+          "title": "Documents",
+          "href": "documents_index.html",
+          "roles": []
+        },
+        {
+          "title": "Document Type",
+          "href": "documentTypes_index.html",
+          "roles": []
+        }
+      ]
+    },
+    {
+      "title": "Authorization",
+      "icon": "fal fa-shield-alt",
+      "roles": [ "Admin" ],
+      "items": [
+        {
+          "title": "Users",
+          "href": "authorization_users.html",
+          "roles": []
+        },
+        {
+          "title": "Roles",
+          "href": "authorization_roles.html",
+          "roles": []
+        },
+        {
+          "title": "Dictionaries",
+          "href": "keyValues_index.html",
+          "roles": []
+        },
+        {
+          "title": "Audit Trails",
+          "href": "audittrails_index.html",
+          "roles": []
+        },
+        {
+          "title": "Logs",
+          "href": "logs_index.html",
+          "roles": []
+        }
+      ]
+    }
+
+
+
+
+  ]
+}
