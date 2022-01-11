@@ -70,7 +70,7 @@ public class Testing
             TablesToIgnore = new[] { "__EFMigrationsHistory" }
         };
 
-        EnsureDatabase();
+        //EnsureDatabase();
     }
 
     private static void EnsureDatabase()

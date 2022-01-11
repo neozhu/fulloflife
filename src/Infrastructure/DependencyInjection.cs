@@ -58,10 +58,12 @@ public static class DependencyInjection
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IExcelService, ExcelService>();
+        services.AddTransient<IQiniuService, QiniuService>();
         services.AddTransient<IUploadService, UploadService>();
         services.AddTransient<IIdentityService, IdentityService>();
         services.Configure<AppConfigurationSettings>(configuration.GetSection("AppConfigurationSettings"));
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+        services.Configure<QiniuSettings>(configuration.GetSection("QiniuSettings"));
         services.AddTransient<IMailService, SMTPMailService>();
         services.AddTransient<IDictionaryService, DictionaryService>();
         services.AddAuthentication();
