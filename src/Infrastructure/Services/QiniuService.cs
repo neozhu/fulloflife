@@ -53,7 +53,7 @@ public class QiniuService : IQiniuService
         var result = JsonSerializer.Deserialize<result>(httpresult.Text);
         Console.WriteLine("form upload result: " + httpresult.ToString());
   
-        return Task.FromResult(result.key);
+        return Task.FromResult($"{_qiniuSetting.Domain}{result.key}");
     }
 
     record result {

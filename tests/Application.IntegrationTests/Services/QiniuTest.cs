@@ -8,19 +8,14 @@ namespace CleanArchitecture.Application.IntegrationTests.Services;
 using static Testing;
 public class QiniuTest:TestBase
 {
-    private readonly IQiniuService _qiniuService;
 
-    public QiniuTest(
-        IQiniuService qiniuService)
-    {
-        _qiniuService = qiniuService;
-    }
     [Test]
     public async Task UploadFileToQiniu()
     {
         var path = @"D:\github\fulloflife\tests\Application.IntegrationTests\img\1.png";
         var buffer = File.ReadAllBytes(path);
-
-       var result =await  _qiniuService.Upload(buffer, "1.png");
+        var qiniu = await GetRequiredService<IQiniuService>();
+        var result =await qiniu.Upload(buffer, "1.png");
+        result.Should().BeEquivalentTo("1.png");
     }
 }

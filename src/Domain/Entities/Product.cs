@@ -15,7 +15,7 @@ public class Product : AuditableEntity
     public int Sequence { get; set; }
     public bool IsNew { get; set; }=true;
     public bool IsPublish { get; set; }
-    public string[] Options { get; set; }
+    public Dictionary<string,decimal?> Options { get; set; }
     public decimal? Price { get; set; }
     public decimal? Cost { get; set; }
     public int StockQty { get; set; }

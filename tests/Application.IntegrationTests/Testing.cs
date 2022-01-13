@@ -70,7 +70,7 @@ public class Testing
             TablesToIgnore = new[] { "__EFMigrationsHistory" }
         };
 
-        //EnsureDatabase();
+        EnsureDatabase();
     }
 
     private static void EnsureDatabase()
@@ -161,6 +161,12 @@ public class Testing
         context.Add(entity);
 
         await context.SaveChangesAsync();
+    }
+    public static Task<T> GetRequiredService<T>()
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<T>();
+        return Task.FromResult(service);
     }
 
     public static async Task<int> CountAsync<TEntity>() where TEntity : class

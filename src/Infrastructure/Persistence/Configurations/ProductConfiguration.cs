@@ -18,7 +18,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(e => e.Options)
            .HasConversion(
                  v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                 v => JsonSerializer.Deserialize<string[]>(v, (JsonSerializerOptions)null)
+                 v => JsonSerializer.Deserialize<Dictionary<string,decimal?>>(v, (JsonSerializerOptions)null)
                 );
 
         builder.Property(u => u.Pictures)

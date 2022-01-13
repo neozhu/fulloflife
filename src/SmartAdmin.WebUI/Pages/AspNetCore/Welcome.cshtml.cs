@@ -30,9 +30,6 @@ namespace SmartAdmin.WebUI.Pages.AspNetCore
 
         public void OnGet()
         {
-            var path = Path.Combine(_environment.ContentRootPath, "wwwroot/img/logo.png");
-            var buffer= System.IO.File.ReadAllBytes(path);
-             _qiniuService.Upload(buffer, "logo.png");
             _logger.LogInformation("Welcome.");
             _diagnosticContext.Set("IndexCallCount", Interlocked.Increment(ref _callCount));
         }
