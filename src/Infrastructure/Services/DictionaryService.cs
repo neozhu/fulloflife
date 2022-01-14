@@ -15,7 +15,7 @@ public class DictionaryService : IDictionaryService
     {
         _context = context;
     }
-    public async Task<IDictionary<string, string>> Fetch(string name)
+    public async Task<IDictionary<string?, string?>?> Fetch(string name)
     {
         var result = await _context.KeyValues.Where(x => x.Name == name)
             .ToDictionaryAsync(k => k.Value, v => v.Text);

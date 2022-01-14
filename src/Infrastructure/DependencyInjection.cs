@@ -22,8 +22,6 @@ public static class DependencyInjection
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseInMemoryDatabase("CleanArchitecture.RazorDb")
                 );
-
-         
         }
         else
         {
@@ -36,7 +34,7 @@ public static class DependencyInjection
             services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
-        
+
         services.Configure<CookiePolicyOptions>(options =>
         {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -48,7 +46,6 @@ public static class DependencyInjection
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
         services.AddScoped<IDomainEventService, DomainEventService>();
-
 
         services
             .AddDefaultIdentity<ApplicationUser>()
@@ -82,8 +79,8 @@ public static class DependencyInjection
         services.AddAuthorization(options =>
         {
             options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator"));
-                // Here I stored necessary permissions/roles in a constant
-                foreach (var prop in typeof(Permissions).GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
+            // Here I stored necessary permissions/roles in a constant
+            foreach (var prop in typeof(Permissions).GetNestedTypes().SelectMany(c => c.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)))
             {
                 var propertyValue = prop.GetValue(null);
                 if (propertyValue is not null)
@@ -120,10 +117,11 @@ public static class DependencyInjection
                  {
                      options.JsonSerializerOptions.PropertyNamingPolicy = null;
 
-                 }) ;
+                 });
 
 
-        services.ConfigureApplicationCookie(options => {
+        services.ConfigureApplicationCookie(options =>
+        {
             options.LoginPath = "/Identity/Account/Login";
             options.LogoutPath = "/Identity/Account/Logout";
             options.AccessDeniedPath = "/Identity/Account/AccessDenied";
@@ -132,5 +130,5 @@ public static class DependencyInjection
     }
 
 
- 
+
 }

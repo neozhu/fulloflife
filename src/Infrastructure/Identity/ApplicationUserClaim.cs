@@ -13,9 +13,5 @@ public class ApplicationUserClaim : IdentityUserClaim<string>
     {
     }
 
-    public ApplicationUserClaim(string userClaimDescription = null) : base()
-    {
-        Description = userClaimDescription;
-
-    }
+    public ApplicationUserClaim(string? userClaimDescription = null) : base() => Description = userClaimDescription;
 }

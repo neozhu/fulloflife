@@ -41,7 +41,7 @@ public class IdentityService : IIdentityService
         _localizer = localizer;
     }
 
-    public async Task<string> GetUserNameAsync(string userId)
+    public async Task<string?> GetUserNameAsync(string userId)
     {
         var user = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == userId);
 
@@ -98,7 +98,7 @@ public class IdentityService : IIdentityService
         return result.ToApplicationResult();
     }
 
-    public async Task<IDictionary<string, string>> FetchUsers(string roleName)
+    public async Task<IDictionary<string, string?>?> FetchUsers(string roleName)
     {
         var result = await _userManager.Users
              .Where(x => x.UserRoles.Where(y => y.Role.Name == roleName).Any())
@@ -244,10 +244,14 @@ public class IdentityService : IIdentityService
         return new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256);
     }
 
-    public async Task<string> UpdateLiveStatus(string userId, bool isLive)
+    public async Task<string?> UpdateLiveStatus(string userId, bool isLive)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user is null) return string.Empty;
+        if (user is null)
+        {
+            return null;
+        }
+
         user.IsLive = true;
         await _userManager.UpdateAsync(user);
         return user.DisplayName;

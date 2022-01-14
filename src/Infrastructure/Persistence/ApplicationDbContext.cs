@@ -22,9 +22,7 @@ public class ApplicationDbContext : IdentityDbContext<
     private readonly IDateTime _dateTime;
     private readonly IDomainEventService _domainEventService;
 
-    public ApplicationDbContext() : base()
-    {
-    }
+
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
         ICurrentUserService currentUserService,
@@ -36,15 +34,15 @@ public class ApplicationDbContext : IdentityDbContext<
         _domainEventService = domainEventService;
         _dateTime = dateTime;
     }
-    public DbSet<Logger> Loggers { get; set; }
-    public DbSet<AuditTrail> AuditTrails { get; set; }
-    public DbSet<Customer> Customers { get; set; }
-    public DbSet<DocumentType> DocumentTypes { get; set; }
-    public DbSet<Document> Documents { get; set; }
+    public DbSet<Logger> Loggers { get; set; } = null!;
+    public DbSet<AuditTrail> AuditTrails { get; set; } = null!;
+    public DbSet<Customer> Customers { get; set; } = null!;
+    public DbSet<DocumentType> DocumentTypes { get; set; } = null!;
+    public DbSet<Document> Documents { get; set; } = null!;
 
-    public DbSet<KeyValue> KeyValues { get; set; }
+    public DbSet<KeyValue> KeyValues { get; set; } = null!;
 
-    public DbSet<Product> Products { get; set; }
+    public DbSet<Product> Products { get; set; } = null!;
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
         var auditEntries = OnBeforeSaveChanges(_currentUserService.UserId);

@@ -5,6 +5,7 @@
     <RootNamespace>CleanArchitecture.Razor.Infrastructure</RootNamespace>
     <AssemblyName>CleanArchitecture.Razor.Infrastructure</AssemblyName>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Filters\" />
     <Folder Include="Persistence\Migrations\" />
   </ItemGroup>
 

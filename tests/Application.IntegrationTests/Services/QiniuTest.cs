@@ -1,7 +1,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using CleanArchitecture.Razor.Application.Common.Interfaces;
-using CleanArchitecture.Razor.Application.Features.KeyValues.Queries.ByName;
 using FluentAssertions;
 using NUnit.Framework;
 namespace CleanArchitecture.Application.IntegrationTests.Services;

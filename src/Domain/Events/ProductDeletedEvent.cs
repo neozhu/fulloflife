@@ -3,13 +3,13 @@
 
 namespace CleanArchitecture.Razor.Domain.Events;
 
-    public class ProductDeletedEvent : DomainEvent
+public class ProductDeletedEvent : DomainEvent
+{
+    public ProductDeletedEvent(Product item)
     {
-        public ProductDeletedEvent(Product item)
-        {
-            Item = item;
-        }
-
-        public Product Item { get; }
+        Item = item;
     }
+
+    public Product Item { get; }
+}
 

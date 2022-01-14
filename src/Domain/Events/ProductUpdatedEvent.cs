@@ -4,13 +4,13 @@
 namespace CleanArchitecture.Razor.Domain.Events;
 
 
-    public class ProductUpdatedEvent : DomainEvent
+public class ProductUpdatedEvent : DomainEvent
+{
+    public ProductUpdatedEvent(Product item)
     {
-        public ProductUpdatedEvent(Product item)
-        {
-            Item = item;
-        }
-
-        public Product Item { get; }
+        Item = item;
     }
+
+    public Product Item { get; }
+}
 

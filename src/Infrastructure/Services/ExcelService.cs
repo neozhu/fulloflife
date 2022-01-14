@@ -4,6 +4,7 @@
 using Microsoft.Extensions.Localization;
 using System.Data;
 using ClosedXML.Excel;
+using System.Globalization;
 
 namespace CleanArchitecture.Razor.Infrastructure.Services;
 
@@ -107,7 +108,7 @@ public class ExcelService : IExcelService
         {
             if (!workbook.Worksheets.Contains(sheetName))
             {
-                return await Result<IEnumerable<TEntity>>.FailureAsync(new string[] { string.Format(_localizer["Sheet with name {0} does not exist!"], sheetName) });
+                return await Result<IEnumerable<TEntity>>.FailureAsync(new string[] { string.Format(CultureInfo.InvariantCulture, _localizer["Sheet with name {0} does not exist!"], sheetName) });
             }
             var ws = workbook.Worksheet(sheetName);
             var dt = new DataTable();
@@ -124,7 +125,7 @@ public class ExcelService : IExcelService
             {
                 if (!dt.Columns.Contains(header))
                 {
-                    errors.Add(string.Format(_localizer["Header '{0}' does not exist in table!"], header));
+                    errors.Add(string.Format(CultureInfo.InvariantCulture, _localizer["Header '{0}' does not exist in table!"], header));
                 }
             }
             if (errors.Any())
@@ -143,7 +144,7 @@ public class ExcelService : IExcelService
                     {
                         if (cell.DataType == XLDataType.DateTime)
                         {
-                            datarow[cell.Address.ColumnNumber - 1] = cell.GetDateTime().ToString("yyyy-MM-dd HH:mm:ss");
+                            datarow[cell.Address.ColumnNumber - 1] = cell.GetDateTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                         }
                         else
                         {
@@ -155,7 +156,7 @@ public class ExcelService : IExcelService
                 }
                 catch (Exception e)
                 {
-                    return await Result<IEnumerable<TEntity>>.FailureAsync(new string[] { string.Format(_localizer["Sheet name {0}:{1}"], sheetName, e.Message) });
+                    return await Result<IEnumerable<TEntity>>.FailureAsync(new string[] { string.Format(CultureInfo.InvariantCulture, _localizer["Sheet name {0}:{1}"], sheetName, e.Message) });
                 }
             }
 

@@ -1,3 +1,6 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using CleanArchitecture.Razor.Application.Hubs;
 using CleanArchitecture.Razor.Application.Hubs.Constants;
 using Microsoft.AspNetCore.Builder;
@@ -16,7 +19,8 @@ public static class ApplicationBuilderExtensions
     {
         app.UseSerilogRequestLogging(options =>
         {
-            options.EnrichDiagnosticContext = (diagnosticContext, httpContext) => {
+            options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+            {
                 //This didn't work when tested
                 diagnosticContext.Set("UserName", httpContext.User?.Identity?.Name ?? "Anonymous");
             };
@@ -28,7 +32,7 @@ public static class ApplicationBuilderExtensions
             LogContext.PushProperty("UserName", userName); //Push user in LogContext;
             await next.Invoke();
         });
-       
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseStaticFiles(new StaticFileOptions
@@ -42,9 +46,9 @@ public static class ApplicationBuilderExtensions
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
-       
-       // app.UseWorkflow();
-       
+
+        // app.UseWorkflow();
+
 
         app.UseEndpoints(endpoints =>
         {
@@ -53,7 +57,7 @@ public static class ApplicationBuilderExtensions
             endpoints.MapHub<SignalRHub>(SignalR.HubUrl);
         });
 
- 
+
 
         return app;
     }

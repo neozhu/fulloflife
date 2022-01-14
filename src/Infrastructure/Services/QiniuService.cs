@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Qiniu.Storage;
@@ -27,7 +25,7 @@ public class QiniuService : IQiniuService
         var mac = new Mac(_qiniuSetting.AccessKey, _qiniuSetting.SecretKey);
         // 上传文件名
         string key = fileName;
-        
+
         // 存储空间名
         string Bucket = _qiniuSetting.Bucket;
         // 设置上传策略
@@ -52,12 +50,13 @@ public class QiniuService : IQiniuService
         var httpresult = target.UploadData(data, key, token, null);
         var result = JsonSerializer.Deserialize<result>(httpresult.Text);
         Console.WriteLine("form upload result: " + httpresult.ToString());
-  
+
         return Task.FromResult($"{_qiniuSetting.Domain}{result.key}");
     }
 
-    record result {
+    record result
+    {
         public string key { get; set; }
         public string hash { get; set; }
-        }
+    }
 }

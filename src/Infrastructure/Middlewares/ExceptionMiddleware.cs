@@ -1,3 +1,6 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
@@ -13,8 +16,8 @@ internal class ExceptionMiddleware : IMiddleware
     private readonly IStringLocalizer<ExceptionMiddleware> _localizer;
 
     public ExceptionMiddleware(
-  
-        ICurrentUserService currentUserService ,
+
+        ICurrentUserService currentUserService,
         ILogger<ExceptionMiddleware> logger,
         IStringLocalizer<ExceptionMiddleware> localizer)
     {

@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Globalization;
 using CleanArchitecture.Razor.Application.Common.Extensions;
 
 namespace CleanArchitecture.Razor.Infrastructure.Services;
@@ -9,7 +10,11 @@ public class UploadService : IUploadService
 {
     public async Task<string> UploadAsync(UploadRequest request)
     {
-        if (request.Data == null) return string.Empty;
+        if (request.Data == null)
+        {
+            return string.Empty;
+        }
+
         var streamData = new MemoryStream(request.Data);
         if (streamData.Length > 0)
         {
@@ -56,7 +61,7 @@ public class UploadService : IUploadService
 
     private static string GetNextFilename(string pattern)
     {
-        string tmp = string.Format(pattern, 1);
+        string tmp = string.Format(CultureInfo.InvariantCulture, pattern, 1);
         //if (tmp == pattern)
         //throw new ArgumentException("The pattern must include an index place-holder", "pattern");
 
@@ -65,7 +70,7 @@ public class UploadService : IUploadService
 
         int min = 1, max = 2; // min is inclusive, max is exclusive/untested
 
-        while (File.Exists(string.Format(pattern, max)))
+        while (File.Exists(string.Format(CultureInfo.InvariantCulture, pattern, max)))
         {
             min = max;
             max *= 2;
@@ -74,12 +79,12 @@ public class UploadService : IUploadService
         while (max != min + 1)
         {
             int pivot = (max + min) / 2;
-            if (File.Exists(string.Format(pattern, pivot)))
+            if (File.Exists(string.Format(CultureInfo.InvariantCulture, pattern, pivot)))
                 min = pivot;
             else
                 max = pivot;
         }
 
-        return string.Format(pattern, max);
+        return string.Format(CultureInfo.InvariantCulture, pattern, max);
     }
 }

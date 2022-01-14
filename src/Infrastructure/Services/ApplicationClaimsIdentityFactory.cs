@@ -7,13 +7,13 @@ using Microsoft.Extensions.Options;
 
 namespace CleanArchitecture.Razor.Infrastructure.Services;
 
-public class ApplicationClaimsIdentityFactory : UserClaimsPrincipalFactory<ApplicationUser,ApplicationRole>
+public class ApplicationClaimsIdentityFactory : UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>
 {
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly UserManager<ApplicationUser> _userManager;
     public ApplicationClaimsIdentityFactory(UserManager<ApplicationUser> userManager,
         RoleManager<ApplicationRole> roleManager,
-        IOptions<IdentityOptions> optionsAccessor) : base(userManager,roleManager, optionsAccessor)
+        IOptions<IdentityOptions> optionsAccessor) : base(userManager, roleManager, optionsAccessor)
     {
         _userManager = userManager;
         _roleManager = roleManager;
