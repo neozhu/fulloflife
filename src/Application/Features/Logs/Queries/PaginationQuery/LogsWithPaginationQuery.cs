@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Razor.Application.Features.Logs.DTOs;
-using CleanArchitecture.Razor.Domain.Entities.Log;
 
 namespace CleanArchitecture.Razor.Application.Logs.Queries.PaginationQuery;
 

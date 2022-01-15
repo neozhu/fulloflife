@@ -1,3 +1,6 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using CleanArchitecture.Razor.Application;
 using CleanArchitecture.Razor.Application.Common.Interfaces;
 using CleanArchitecture.Razor.Infrastructure;
@@ -93,7 +96,7 @@ public class Testing
 
     public static async Task<string> RunAsDefaultUserAsync()
     {
-        return await RunAsUserAsync("Demo", "Password123!", new string[] { });
+        return await RunAsUserAsync("Demo", "Password123!", Array.Empty<string>());
     }
 
     public static async Task<string> RunAsAdministratorAsync()

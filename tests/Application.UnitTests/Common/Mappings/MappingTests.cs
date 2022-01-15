@@ -1,3 +1,6 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using AutoMapper;
 using CleanArchitecture.Razor.Application.Common.Mappings;
 using CleanArchitecture.Razor.Application.Features.Customers.DTOs;
@@ -11,50 +14,51 @@ using NUnit.Framework;
 using System;
 using System.Runtime.Serialization;
 
-namespace CleanArchitecture.Application.UnitTests.Common.Mappings
-{
-    public class MappingTests
-    {
-        private readonly IConfigurationProvider _configuration;
-        private readonly IMapper _mapper;
+namespace CleanArchitecture.Application.UnitTests.Common.Mappings;
 
-        public MappingTests()
+public class MappingTests
+{
+    private readonly IConfigurationProvider _configuration;
+    private readonly IMapper _mapper;
+
+    public MappingTests()
+    {
+        _configuration = new MapperConfiguration(cfg =>
         {
-            _configuration = new MapperConfiguration(cfg =>
-            {
                 //cfg.Advanced.AllowAdditiveTypeMapCreation = true;
                 cfg.AddProfile<MappingProfile>();
-            });
+        });
 
-            _mapper = _configuration.CreateMapper();
-        }
+        _mapper = _configuration.CreateMapper();
+    }
 
-        [Test]
-        public void ShouldHaveValidConfiguration()
+    [Test]
+    public void ShouldHaveValidConfiguration()
+    {
+        _configuration.AssertConfigurationIsValid();
+    }
+
+    [Test]
+    [TestCase(typeof(DocumentType), typeof(DocumentTypeDto))]
+    [TestCase(typeof(Document), typeof(DocumentDto))]
+    [TestCase(typeof(Customer), typeof(CustomerDto))]
+    [TestCase(typeof(KeyValue), typeof(KeyValueDto))]
+    [TestCase(typeof(Product), typeof(ProductDto))]
+    public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
+    {
+        var instance = GetInstanceOf(source);
+
+        _mapper.Map(instance, source, destination);
+    }
+
+    private object GetInstanceOf(Type type)
+    {
+        if (type.GetConstructor(Type.EmptyTypes) != null)
         {
-            _configuration.AssertConfigurationIsValid();
-        }
-        
-        [Test]
-        [TestCase(typeof(DocumentType), typeof(DocumentTypeDto))]
-        [TestCase(typeof(Document), typeof(DocumentDto))]
-        [TestCase(typeof(Customer), typeof(CustomerDto))]
-        [TestCase(typeof(KeyValue), typeof(KeyValueDto))]
-        [TestCase(typeof(Product), typeof(ProductDto))]
-        public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
-        {
-            var instance = GetInstanceOf(source);
-
-            _mapper.Map(instance, source, destination);
+            return Activator.CreateInstance(type);
         }
 
-        private object GetInstanceOf(Type type)
-        {
-            if (type.GetConstructor(Type.EmptyTypes) != null)
-                return Activator.CreateInstance(type);
-
-            // Type without parameterless constructor
-            return FormatterServices.GetUninitializedObject(type);
-        }
+        // Type without parameterless constructor
+        return FormatterServices.GetUninitializedObject(type);
     }
 }

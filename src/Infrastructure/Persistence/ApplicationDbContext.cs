@@ -43,6 +43,7 @@ public class ApplicationDbContext : IdentityDbContext<
     public DbSet<KeyValue> KeyValues { get; set; } = null!;
 
     public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<Category> Categories { get; set; } = null!;
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
         var auditEntries = OnBeforeSaveChanges(_currentUserService.UserId);
@@ -109,7 +110,9 @@ public class ApplicationDbContext : IdentityDbContext<
             if (entry.Entity is AuditTrail ||
                 entry.State == EntityState.Detached ||
                 entry.State == EntityState.Unchanged)
+            {
                 continue;
+            }
 
             var auditEntry = new AuditTrail()
             {
@@ -169,7 +172,9 @@ public class ApplicationDbContext : IdentityDbContext<
     private Task OnAfterSaveChanges(List<AuditTrail> auditEntries, CancellationToken cancellationToken = new())
     {
         if (auditEntries == null || auditEntries.Count == 0)
+        {
             return Task.CompletedTask;
+        }
 
         foreach (var auditEntry in auditEntries)
         {

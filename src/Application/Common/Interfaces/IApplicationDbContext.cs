@@ -14,5 +14,6 @@ public interface IApplicationDbContext
     DbSet<Document> Documents { get; set; }
     DbSet<KeyValue> KeyValues { get; set; }
     DbSet<Product> Products { get; set; }
+    DbSet<Category> Categories { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

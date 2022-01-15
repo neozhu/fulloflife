@@ -1,3 +1,5 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using FluentAssertions;
 using System.Threading.Tasks;
@@ -7,40 +9,39 @@ using CleanArchitecture.Razor.Domain.Entities;
 using CleanArchitecture.Razor.Application.Features.DocumentTypes.Commands.AddEdit;
 using CleanArchitecture.Razor.Application.Features.DocumentTypes.Commands.Delete;
 
-namespace CleanArchitecture.Application.IntegrationTests.Documents.Commands
+namespace CleanArchitecture.Application.IntegrationTests.Documents.Commands;
+
+using static Testing;
+
+public class DeleteDocumentTypeTests : TestBase
 {
-    using static Testing;
-
-    public class DeleteDocumentTypeTests : TestBase
+    [Test]
+    public void ShouldRequireValidDocumentTypeId()
     {
-        [Test]
-        public void ShouldRequireValidDocumentTypeId()
-        {
-            var command = new DeleteDocumentTypeCommand { Id = 99 };
+        var command = new DeleteDocumentTypeCommand { Id = 99 };
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<NotFoundException>();
-        }
-
-        [Test]
-        public async Task ShouldDeleteDocumentType()
-        {
-            var addcommand = new AddEditDocumentTypeCommand()
-            {
-                Name = "Word",
-                Description = "For Test"
-            };
-           var result= await SendAsync(addcommand);
-             
-            await SendAsync(new DeleteDocumentTypeCommand
-            {
-                Id = result.Data
-            });
-
-            var item = await FindAsync<Document>(result.Data);
-
-            item.Should().BeNull();
-        }
-         
+        FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<NotFoundException>();
     }
+
+    [Test]
+    public async Task ShouldDeleteDocumentType()
+    {
+        var addcommand = new AddEditDocumentTypeCommand()
+        {
+            Name = "Word",
+            Description = "For Test"
+        };
+        var result = await SendAsync(addcommand);
+
+        await SendAsync(new DeleteDocumentTypeCommand
+        {
+            Id = result.Data
+        });
+
+        var item = await FindAsync<Document>(result.Data);
+
+        item.Should().BeNull();
+    }
+
 }

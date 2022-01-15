@@ -35,7 +35,11 @@ internal class ExceptionMiddleware : IMiddleware
         catch (Exception exception)
         {
             var userId = _currentUserService.UserId;
-            if (!string.IsNullOrEmpty(userId)) LogContext.PushProperty("UserId", userId);
+            if (!string.IsNullOrEmpty(userId))
+            {
+                LogContext.PushProperty("UserId", userId);
+            }
+
             string errorId = Guid.NewGuid().ToString();
             LogContext.PushProperty("ErrorId", errorId);
             LogContext.PushProperty("StackTrace", exception.StackTrace);

@@ -153,9 +153,15 @@ public class IdentityService : IIdentityService
         var userEmail = userPrincipal.FindFirstValue(ClaimTypes.Email);
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
+        {
             return await Result<TokenResponseDto>.FailureAsync(new string[] { _localizer["User Not Found."] });
+        }
+
         if (user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+        {
             return await Result<TokenResponseDto>.FailureAsync(new string[] { _localizer["Invalid Client Token."] });
+        }
+
         var token = GenerateEncryptedToken(GetSigningCredentials(), await GetClaimsAsync(user));
         user.RefreshToken = GenerateRefreshToken();
         await _userManager.UpdateAsync(user);

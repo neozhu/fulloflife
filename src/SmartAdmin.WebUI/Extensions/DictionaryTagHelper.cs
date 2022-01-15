@@ -5,39 +5,38 @@ using CleanArchitecture.Razor.Application.Features.KeyValues.Queries.ByName;
 using MediatR;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace SmartAdmin.WebUI.Extensions
+namespace SmartAdmin.WebUI.Extensions;
+
+// You may need to install the Microsoft.AspNetCore.Razor.Runtime package into your project
+[HtmlTargetElement("select", Attributes = DICTIONARIESNAME)]
+public class DictionaryTagHelper : TagHelper
 {
-    // You may need to install the Microsoft.AspNetCore.Razor.Runtime package into your project
-    [HtmlTargetElement("select", Attributes = DICTIONARIESNAME)]
-    public class DictionaryTagHelper : TagHelper
+    private const string DICTIONARIESNAME = "asp-dictionaries-for";
+
+    [HtmlAttributeName(DICTIONARIESNAME)]
+    public string Dictionaries { get; set; }
+    private readonly ISender _mediator;
+
+    public DictionaryTagHelper(
+        ISender mediator
+        )
     {
-        private const string DICTIONARIESNAME = "asp-dictionaries-for";
 
-        [HtmlAttributeName(DICTIONARIESNAME)]
-        public string Dictionaries { get; set; }
-        private readonly ISender _mediator;
+        _mediator = mediator;
+    }
+    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+    {
 
-        public DictionaryTagHelper(
-            ISender mediator
-            )
+        if (!string.IsNullOrEmpty(Dictionaries))
         {
-       
-            _mediator = mediator;
-        }
-        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
-        {
-        
-            if (!string.IsNullOrEmpty(Dictionaries))
+            string name = Dictionaries;
+            var query = new KeyValuesQueryByName() { Name = name };
+            var items = await _mediator.Send(query);
+            if (items != null)
             {
-                string name = Dictionaries;
-                var query = new KeyValuesQueryByName() { Name = name };
-                var items = await _mediator.Send(query);
-                if (items != null)
+                foreach (var key in items)
                 {
-                    foreach (var key in items)
-                    {
-                        output.PostContent.AppendHtml($"<option value=\"{key.Value}\">{key.Text}</option>");
-                    }
+                    output.PostContent.AppendHtml($"<option value=\"{key.Value}\">{key.Text}</option>");
                 }
             }
         }

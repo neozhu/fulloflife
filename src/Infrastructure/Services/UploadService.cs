@@ -22,7 +22,11 @@ public class UploadService : IUploadService
             var folderName = Path.Combine("Files", folder);
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
             bool exists = Directory.Exists(pathToSave);
-            if (!exists) Directory.CreateDirectory(pathToSave);
+            if (!exists)
+            {
+                Directory.CreateDirectory(pathToSave);
+            }
+
             var fileName = request.FileName.Trim('"');
             var fullPath = Path.Combine(pathToSave, fileName);
             var dbPath = Path.Combine(folderName, fileName);
@@ -49,11 +53,15 @@ public class UploadService : IUploadService
     {
         // Short-cut if already available
         if (!File.Exists(path))
+        {
             return path;
+        }
 
         // If path has extension then insert the number pattern just before the extension and return next filename
         if (Path.HasExtension(path))
+        {
             return GetNextFilename(path.Insert(path.LastIndexOf(Path.GetExtension(path)), _numberPattern));
+        }
 
         // Otherwise just append the pattern to the path and return next filename
         return GetNextFilename(path + _numberPattern);
@@ -66,7 +74,9 @@ public class UploadService : IUploadService
         //throw new ArgumentException("The pattern must include an index place-holder", "pattern");
 
         if (!File.Exists(tmp))
+        {
             return tmp; // short-circuit if no matches
+        }
 
         int min = 1, max = 2; // min is inclusive, max is exclusive/untested
 
@@ -80,9 +90,13 @@ public class UploadService : IUploadService
         {
             int pivot = (max + min) / 2;
             if (File.Exists(string.Format(CultureInfo.InvariantCulture, pattern, pivot)))
+            {
                 min = pivot;
+            }
             else
+            {
                 max = pivot;
+            }
         }
 
         return string.Format(CultureInfo.InvariantCulture, pattern, max);

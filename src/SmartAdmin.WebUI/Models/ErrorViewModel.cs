@@ -1,19 +1,21 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
-namespace SmartAdmin.WebUI.Models
+using Microsoft.AspNetCore.Identity.UI.Services;
+
+namespace SmartAdmin.WebUI.Models;
+
+public class ErrorViewModel
 {
-    public class ErrorViewModel
-    {
-        public string RequestId { get; set; }
+    public string RequestId { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-    }
+    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+}
 
-    public class EmailSender : IEmailSender
+public class EmailSender : IEmailSender
+{
+    public Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
-        {
-            throw new NotImplementedException("No email provider is implemented by default, please Google on how to add one, like SendGrid.");
-        }
+        throw new NotImplementedException("No email provider is implemented by default, please Google on how to add one, like SendGrid.");
     }
 }

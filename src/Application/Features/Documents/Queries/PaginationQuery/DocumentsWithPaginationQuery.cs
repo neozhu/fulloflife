@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Razor.Application.Features.Documents.DTOs;
-using CleanArchitecture.Razor.Application.Common.Specification;
 
 namespace CleanArchitecture.Razor.Application.Features.Documents.Queries.PaginationQuery;
 

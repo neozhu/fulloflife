@@ -1,3 +1,6 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
 using System.Diagnostics;
 using System.Security.Claims;
 using CleanArchitecture.Razor.Infrastructure.Persistence;
@@ -5,69 +8,68 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Identity;
 using SmartAdmin.WebUI.Models;
 
-namespace SmartAdmin.WebUI.Extensions
+namespace SmartAdmin.WebUI.Extensions;
+
+public static class IdentityExtensions
 {
-    public static class IdentityExtensions
+    [DebuggerStepThrough]
+    private static bool HasRole(this ClaimsPrincipal principal, params string[] roles)
     {
-        [DebuggerStepThrough]
-        private static bool HasRole(this ClaimsPrincipal principal, params string[] roles)
+        if (principal == null)
+            return default;
+
+        var claims = principal.FindAll(ClaimTypes.Role).Select(x => x.Value).ToSafeList();
+
+        return claims?.Any() == true && claims.Intersect(roles ?? Array.Empty<string>()).Any();
+    }
+
+    [DebuggerStepThrough]
+    public static IEnumerable<ListItem> AuthorizeFor(this IEnumerable<ListItem> source, ClaimsPrincipal identity)
+        => source.Where(x => x.Roles.IsNullOrEmpty() || (x.Roles.HasItems() && identity.HasRole(x.Roles))).ToSafeList();
+
+    [DebuggerStepThrough]
+    public static HtmlString AsRaw(this string value) => new HtmlString(value);
+
+    [DebuggerStepThrough]
+    public static string ToPage(this string href) => System.IO.Path.GetFileNameWithoutExtension(href)?.ToLower();
+
+    [DebuggerStepThrough]
+    public static bool IsVoid(this string href) => href?.ToLower() == NavigationModel.Void;
+
+    [DebuggerStepThrough]
+    public static bool IsRelatedTo(this ListItem item, string pageName) => item?.Type == ItemType.Parent && item?.Href?.ToPage() == pageName?.ToLower();
+
+    [DebuggerStepThrough]
+    public static async Task<IdentityResult> UpdateAsync<T>(this ApplicationDbContext context, T model, string id) where T : class
+    {
+        var entity = await context.FindAsync<T>(id);
+
+        if (entity == null)
         {
-            if (principal == null)
-                return default;
-
-            var claims = principal.FindAll(ClaimTypes.Role).Select(x => x.Value).ToSafeList();
-
-            return claims?.Any() == true && claims.Intersect(roles ?? Array.Empty<string>()).Any();
+            return IdentityResult.Failed();
         }
 
-        [DebuggerStepThrough]
-        public static IEnumerable<ListItem> AuthorizeFor(this IEnumerable<ListItem> source, ClaimsPrincipal identity)
-            => source.Where(x => x.Roles.IsNullOrEmpty() || (x.Roles.HasItems() && identity.HasRole(x.Roles))).ToSafeList();
+        context.Entry((object)entity).CurrentValues.SetValues(model);
 
-        [DebuggerStepThrough]
-        public static HtmlString AsRaw(this string value) => new HtmlString(value);
+        await context.SaveChangesAsync();
 
-        [DebuggerStepThrough]
-        public static string ToPage(this string href) => System.IO.Path.GetFileNameWithoutExtension(href)?.ToLower();
+        return IdentityResult.Success;
+    }
 
-        [DebuggerStepThrough]
-        public static bool IsVoid(this string href) => href?.ToLower() == NavigationModel.Void;
+    [DebuggerStepThrough]
+    public static async Task<IdentityResult> DeleteAsync<T>(this ApplicationDbContext context, string id) where T : class
+    {
+        var entity = await context.FindAsync<T>(id);
 
-        [DebuggerStepThrough]
-        public static bool IsRelatedTo(this ListItem item, string pageName) => item?.Type == ItemType.Parent && item?.Href?.ToPage() == pageName?.ToLower();
-
-        [DebuggerStepThrough]
-        public static async Task<IdentityResult> UpdateAsync<T>(this ApplicationDbContext context, T model, string id) where T : class
+        if (entity == null)
         {
-            var entity = await context.FindAsync<T>(id);
-
-            if (entity == null)
-            {
-                return IdentityResult.Failed();
-            }
-
-            context.Entry((object)entity).CurrentValues.SetValues(model);
-
-            await context.SaveChangesAsync();
-
-            return IdentityResult.Success;
+            return IdentityResult.Failed();
         }
 
-        [DebuggerStepThrough]
-        public static async Task<IdentityResult> DeleteAsync<T>(this ApplicationDbContext context, string id) where T : class
-        {
-            var entity = await context.FindAsync<T>(id);
+        context.Remove((object)entity);
 
-            if (entity == null)
-            {
-                return IdentityResult.Failed();
-            }
+        await context.SaveChangesAsync();
 
-            context.Remove((object)entity);
-
-            await context.SaveChangesAsync();
-
-            return IdentityResult.Success;
-        }
+        return IdentityResult.Success;
     }
 }

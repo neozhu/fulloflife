@@ -1,3 +1,5 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using FluentAssertions;
 using System.Threading.Tasks;
@@ -7,88 +9,88 @@ using CleanArchitecture.Razor.Application.Common.Exceptions;
 using CleanArchitecture.Razor.Application.Features.Customers.Commands.AddEdit;
 using CleanArchitecture.Razor.Domain.Entities;
 
-namespace CleanArchitecture.Application.IntegrationTests.Customers.Commands
+namespace CleanArchitecture.Application.IntegrationTests.Customers.Commands;
+
+using static Testing;
+
+public class DeleteCustomerTests : TestBase
 {
-    using static Testing;
-
-    public class DeleteCustomerTests : TestBase
+    [Test]
+    public void ShouldRequireCustomerId()
     {
-        [Test]
-        public void ShouldRequireCustomerId() {
-            var command = new DeleteCustomerCommand();
+        var command = new DeleteCustomerCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
-        [Test]
-        public void ShouldRequireCustomerIdNotEmpty()
+        FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+    [Test]
+    public void ShouldRequireCustomerIdNotEmpty()
+    {
+        var command = new DeleteCheckedCustomersCommand();
+
+        FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+    [Test]
+    public void ShouldRequireValidCustomerId()
+    {
+        var command = new DeleteCustomerCommand { Id = 99 };
+
+        FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+    }
+
+    [Test]
+    public async Task ShouldDeleteCustomer()
+    {
+        var result = await SendAsync(new AddEditCustomerCommand
         {
-            var command = new DeleteCheckedCustomersCommand();
-
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
-        [Test]
-        public void ShouldRequireValidCustomerId()
+            Name = "Name",
+            NameOfEnglish = "NameOfEnglish",
+            GroupName = "GroupName",
+            Region = "Region",
+            Sales = "Sales",
+            RegionSalesDirector = "RegionSalesDirector",
+            PartnerType = "IC"
+        });
+        await SendAsync(new DeleteCustomerCommand
         {
-            var command = new DeleteCustomerCommand { Id = 99 };
+            Id = result.Data
+        });
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<NotFoundException>();
-        }
+        var item = await FindAsync<Customer>(result.Data);
 
-        [Test]
-        public async Task ShouldDeleteCustomer()
+        item.Should().BeNull();
+    }
+    [Test]
+    public async Task ShouldDeleteCheckedCustomers()
+    {
+        var result1 = await SendAsync(new AddEditCustomerCommand
         {
-            var result = await SendAsync(new AddEditCustomerCommand
-            {
-                Name = "Name",
-                NameOfEnglish = "NameOfEnglish",
-                GroupName = "GroupName",
-                Region = "Region",
-                Sales = "Sales",
-                RegionSalesDirector = "RegionSalesDirector",
-                PartnerType = "IC"
-            });
-            await SendAsync(new DeleteCustomerCommand
-            {
-                Id = result.Data
-            });
-
-            var item = await FindAsync<Customer>(result.Data);
-
-            item.Should().BeNull();
-        }
-        [Test]
-        public async Task ShouldDeleteCheckedCustomers()
+            Name = "Name",
+            NameOfEnglish = "NameOfEnglish",
+            GroupName = "GroupName",
+            Region = "Region",
+            Sales = "Sales",
+            RegionSalesDirector = "RegionSalesDirector",
+            PartnerType = "IC"
+        });
+        var result2 = await SendAsync(new AddEditCustomerCommand
         {
-            var result1 = await SendAsync(new AddEditCustomerCommand
-            {
-                Name = "Name",
-                NameOfEnglish = "NameOfEnglish",
-                GroupName = "GroupName",
-                Region = "Region",
-                Sales = "Sales",
-                RegionSalesDirector = "RegionSalesDirector",
-                PartnerType = "IC"
-            });
-            var result2 = await SendAsync(new AddEditCustomerCommand
-            {
-                Name = "Name",
-                NameOfEnglish = "NameOfEnglish",
-                GroupName = "GroupName",
-                Region = "Region",
-                Sales = "Sales",
-                RegionSalesDirector = "RegionSalesDirector",
-                PartnerType = "IC"
-            });
-            await SendAsync(new DeleteCheckedCustomersCommand
-            {
-                Id = new int[] {result1.Data,result2.Data }
-            });
+            Name = "Name",
+            NameOfEnglish = "NameOfEnglish",
+            GroupName = "GroupName",
+            Region = "Region",
+            Sales = "Sales",
+            RegionSalesDirector = "RegionSalesDirector",
+            PartnerType = "IC"
+        });
+        await SendAsync(new DeleteCheckedCustomersCommand
+        {
+            Id = new int[] { result1.Data, result2.Data }
+        });
 
-            var item = await FindAsync<Customer>(result1.Data);
-            item.Should().BeNull();
-        }
+        var item = await FindAsync<Customer>(result1.Data);
+        item.Should().BeNull();
     }
 }

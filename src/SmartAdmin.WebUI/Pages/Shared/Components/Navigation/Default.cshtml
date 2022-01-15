@@ -18,7 +18,7 @@
                     groups = groups.Concat(result).ToList();
                 }
             });
-            <li class="@(groups.Contains(pageName) ? "active open" : "")">
+            <li class="@(groups.Contains(pageName??string.Empty) ? "active open" : "")">
                 <a href="#" title="@group.Title" data-filter-tags="@group.Tags">
                     <i class="@group.Icon"></i>
                     <span class="nav-link-text" data-i18n="@group.I18n">@_localizer[group.Text]</span>
