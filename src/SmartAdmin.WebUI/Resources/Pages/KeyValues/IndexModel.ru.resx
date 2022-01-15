@@ -159,19 +159,19 @@
   <data name="Please upload a file" xml:space="preserve">
     <value>Пожалуйста, загрузите файл</value>
   </data>
-  <data name="Delete ${checkedId.length} Success" xml:space="preserve">
+  <data name="Delete ${checkedId.length} successfully" xml:space="preserve">
     <value>Удалить ${checkedId.length} Успешно</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Ошибка</value>
   </data>
-  <data name="Export Success" xml:space="preserve">
+  <data name="Export successfully" xml:space="preserve">
     <value>Успех экспорта</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>Нет</value>
   </data>
-  <data name="Save Success" xml:space="preserve">
+  <data name="Save successfully" xml:space="preserve">
     <value>Сохраните успех</value>
   </data>
   <data name="Yes" xml:space="preserve">

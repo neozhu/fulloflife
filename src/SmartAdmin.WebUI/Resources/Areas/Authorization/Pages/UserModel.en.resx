@@ -153,7 +153,7 @@
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="Save Success" xml:space="preserve">
+  <data name="Save successfully" xml:space="preserve">
     <value>Save Success</value>
   </data>
   <data name="Search" xml:space="preserve">
@@ -177,7 +177,7 @@
   <data name="Import Excel" xml:space="preserve">
     <value>Import Excel</value>
   </data>
-  <data name="Export Success" xml:space="preserve">
+  <data name="Export successfully" xml:space="preserve">
     <value>Export Success</value>
   </data>
   <data name="Export Excel" xml:space="preserve">
@@ -219,10 +219,10 @@
   <data name="Create a user" xml:space="preserve">
     <value>Create a user</value>
   </data>
-  <data name="Delete ${checkedId.length} Success" xml:space="preserve">
+  <data name="Delete ${checkedId.length} successfully" xml:space="preserve">
     <value>Delete ${checkedId.length} Success</value>
   </data>
-  <data name="Delete success" xml:space="preserve">
+  <data name="Delete successfully" xml:space="preserve">
     <value>Delete success</value>
   </data>
   <data name="Display Name" xml:space="preserve">

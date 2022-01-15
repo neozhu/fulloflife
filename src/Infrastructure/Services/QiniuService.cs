@@ -20,6 +20,24 @@ public class QiniuService : IQiniuService
         _qiniuSetting = qiniuSetting.Value;
         _logger = logger;
     }
+
+    public Task<int> Delete(string key)
+    {
+        var mac = new Mac(_qiniuSetting.AccessKey, _qiniuSetting.SecretKey);
+        // 存储空间名
+        var Bucket = _qiniuSetting.Bucket;
+        var config = new Config();
+        // 设置上传区域
+        config.Zone = Zone.ZONE_CN_East;
+        // 设置 http 或者 https 上传
+        config.UseHttps = true;
+        config.UseCdnDomains = true;
+        config.ChunkSize = ChunkUnit.U512K;
+        var bucketManager = new BucketManager(mac, config);
+        var httpresult = bucketManager.Delete(Bucket, key);
+        return Task.FromResult(httpresult.Code);
+    }
+
     public Task<string> Upload(byte[] data, string fileName)
     {
         var mac = new Mac(_qiniuSetting.AccessKey, _qiniuSetting.SecretKey);

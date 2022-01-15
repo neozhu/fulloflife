@@ -156,7 +156,7 @@
   <data name="Are you sure delete checked rows?" xml:space="preserve">
     <value>チェックした行を削除してもよろしいですか？</value>
   </data>
-  <data name="Delete ${checkedId.length} Success" xml:space="preserve">
+  <data name="Delete ${checkedId.length} successfully" xml:space="preserve">
     <value>$ {checkedId.length}の成功を削除します</value>
   </data>
   <data name="Description" xml:space="preserve">
@@ -171,7 +171,7 @@
   <data name="Error" xml:space="preserve">
     <value>エラー</value>
   </data>
-  <data name="Export Success" xml:space="preserve">
+  <data name="Export successfully" xml:space="preserve">
     <value>エクスポートの成功</value>
   </data>
   <data name="Is Public" xml:space="preserve">
@@ -183,7 +183,7 @@
   <data name="Please upload a file" xml:space="preserve">
     <value>ファイルをアップロードしてください</value>
   </data>
-  <data name="Save Success" xml:space="preserve">
+  <data name="Save successfully" xml:space="preserve">
     <value>成功を保存</value>
   </data>
   <data name="Title" xml:space="preserve">

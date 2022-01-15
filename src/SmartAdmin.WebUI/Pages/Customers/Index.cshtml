@@ -1,4 +1,4 @@
-@page
+﻿@page
 @using CleanArchitecture.Razor.Domain.Enums
 @using CleanArchitecture.Razor.Application.Constants.Permission
 @model SmartAdmin.WebUI.Pages.Customers.IndexModel
@@ -360,7 +360,7 @@
 			callback: function (result) {
 				if (result) {
 					axios.get('@Url.Page("/Customers/Index")?handler=Delete&id=' + id).then(res => {
-						toastr["info"]('@_localizer["Delete Success"]');
+						toastr["info"]('@_localizer["Delete successfully"]');
 						reloadData();
 					})
 						
@@ -386,7 +386,7 @@
 				callback: function (result) {
 					if (result) {
     					axios.post('@Url.Page("/Customers/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
-							toastr["info"](`@_localizer["Delete ${checkedId.length} Success"]`);
+							toastr["info"](`@_localizer["Delete ${checkedId.length} successfully"]`);
 							reloadData();
 						})
 							

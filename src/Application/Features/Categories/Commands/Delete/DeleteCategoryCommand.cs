@@ -27,19 +27,26 @@ public class DeleteCategoryCommandHandler :
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly IStringLocalizer<DeleteCategoryCommandHandler> _localizer;
+    private readonly IQiniuService _qiniuService;
+
     public DeleteCategoryCommandHandler(
         IApplicationDbContext context,
         IStringLocalizer<DeleteCategoryCommandHandler> localizer,
+        IQiniuService qiniuService,
          IMapper mapper
         )
     {
         _context = context;
         _localizer = localizer;
+        _qiniuService = qiniuService;
         _mapper = mapper;
     }
     public async Task<Result> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
         var item = await _context.Categories.FindAsync(new object[] { request.Id }, cancellationToken);
+        var uri = new Uri(item.Icon);
+        var key = Path.GetFileName(uri.LocalPath);
+        var result = await _qiniuService.Delete(key);
         _context.Categories.Remove(item);
         await _context.SaveChangesAsync(cancellationToken);
         return Result.Success();
@@ -50,6 +57,9 @@ public class DeleteCategoryCommandHandler :
         var items = await _context.Categories.Where(x => request.Id.Contains(x.Id)).ToListAsync(cancellationToken);
         foreach (var item in items)
         {
+            var uri = new Uri(item.Icon);
+            var key = Path.GetFileName(uri.LocalPath);
+            var result = await _qiniuService.Delete(key);
             _context.Categories.Remove(item);
         }
         await _context.SaveChangesAsync(cancellationToken);

@@ -13,6 +13,11 @@
       "roles": [ "Admin", "Basic" ],
       "items": [
         {
+          "title": "Product Catalog",
+          "href": "categories_index.html",
+          "roles": []
+        },
+        {
           "title": "Customers",
           "href": "customers_index.html",
           "roles": []

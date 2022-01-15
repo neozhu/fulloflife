@@ -141,10 +141,10 @@
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>
-  <data name="Delete ${checkedId.length} Success" xml:space="preserve">
+  <data name="Delete ${checkedId.length} successfully" xml:space="preserve">
     <value>Delete ${checkedId.length} Success</value>
   </data>
-  <data name="Delete success" xml:space="preserve">
+  <data name="Delete successfully" xml:space="preserve">
     <value>Delete success</value>
   </data>
   <data name="Description" xml:space="preserve">
@@ -180,7 +180,7 @@
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="Save success" xml:space="preserve">
+  <data name="Save successfully" xml:space="preserve">
     <value>Save success</value>
   </data>
   <data name="Search" xml:space="preserve">

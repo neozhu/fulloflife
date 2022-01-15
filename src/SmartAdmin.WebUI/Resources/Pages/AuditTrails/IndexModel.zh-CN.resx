@@ -135,7 +135,7 @@
   <data name="Export fail" xml:space="preserve">
     <value>导出失败</value>
   </data>
-  <data name="Export Success" xml:space="preserve">
+  <data name="Export successfully" xml:space="preserve">
     <value>出口成功</value>
   </data>
   <data name="New Values" xml:space="preserve">

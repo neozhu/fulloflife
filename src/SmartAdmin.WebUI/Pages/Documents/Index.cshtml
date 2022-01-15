@@ -1,4 +1,4 @@
-@page
+﻿@page
 @using CleanArchitecture.Razor.Domain.Enums
 @using Microsoft.AspNetCore.Mvc.Localization
 @using CleanArchitecture.Razor.Application.Constants.Permission
@@ -191,7 +191,7 @@
                     processData: false,// 告诉axios不要去处理发送的数据(重要参数)
                     contentType: false,   // 告诉axios不要去设置Content-Type请求头
                 }).then((response) => {
-                        toastr["info"]('@_localizer["Save Success"]');
+                        toastr["info"]('@_localizer["Save successfully"]');
                         $('#document_modal').modal('toggle');
                         reloadData();
                 })
@@ -364,7 +364,7 @@
                 callback: function (result) {
                     if (result) {
                         axios.get('@Url.Page("/Documents/Index")?handler=Delete&id=' + id).then(res => {
-                            toastr["info"]('@_localizer["Delete Success"]');
+                            toastr["info"]('@_localizer["Delete successfully"]');
                             reloadData();
                         })
                            
@@ -390,7 +390,7 @@
                     callback: function (result) {
                         if (result) {
                             axios.post('@Url.Page("/Documents/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
-                                toastr["info"](`@_localizer["Delete ${checkedId.length} Success"]`);
+                                toastr["info"](`@_localizer["Delete ${checkedId.length} successfully"]`);
                                 reloadData();
                             })
                                
@@ -421,7 +421,7 @@
                     link.setAttribute('download', filename);
                     document.body.appendChild(link);
                     link.click();
-                    toastr["info"](`@_localizer["Export Success"]`);
+                    toastr["info"](`@_localizer["Export successfully"]`);
                 })
 
 
@@ -435,7 +435,7 @@
             link.setAttribute('download', filename);
             document.body.appendChild(link);
             link.click();
-            toastr["info"](`@_localizer["Download Success"]`);
+            toastr["info"](`@_localizer["Download successfully"]`);
         }
 
 

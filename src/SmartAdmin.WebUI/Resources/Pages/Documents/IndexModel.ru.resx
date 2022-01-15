@@ -156,7 +156,7 @@
   <data name="Are you sure delete checked rows?" xml:space="preserve">
     <value>Вы уверены, что удалили отмеченные строки?</value>
   </data>
-  <data name="Delete ${checkedId.length} Success" xml:space="preserve">
+  <data name="Delete ${checkedId.length} successfully" xml:space="preserve">
     <value>Удалите $ {checkedId.length} успешно</value>
   </data>
   <data name="Description" xml:space="preserve">
@@ -171,7 +171,7 @@
   <data name="Error" xml:space="preserve">
     <value>Ошибка</value>
   </data>
-  <data name="Export Success" xml:space="preserve">
+  <data name="Export successfully" xml:space="preserve">
     <value>Успех экспорта</value>
   </data>
   <data name="Is Public" xml:space="preserve">
@@ -183,7 +183,7 @@
   <data name="Please upload a file" xml:space="preserve">
     <value>Пожалуйста, загрузите файл</value>
   </data>
-  <data name="Save Success" xml:space="preserve">
+  <data name="Save successfully" xml:space="preserve">
     <value>Сохранить успех</value>
   </data>
   <data name="Title" xml:space="preserve">

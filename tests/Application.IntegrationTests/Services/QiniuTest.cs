@@ -8,7 +8,7 @@ using FluentAssertions;
 using NUnit.Framework;
 namespace CleanArchitecture.Application.IntegrationTests.Services;
 using static Testing;
-public class QiniuTest:TestBase
+public class QiniuTest : TestBase
 {
 
     [Test]
@@ -17,7 +17,17 @@ public class QiniuTest:TestBase
         var path = @"D:\github\fulloflife\tests\Application.IntegrationTests\img\1.png";
         var buffer = File.ReadAllBytes(path);
         var qiniu = await GetRequiredService<IQiniuService>();
-        var result =await qiniu.Upload(buffer, "1.png");
-        result.Should().BeEquivalentTo("1.png");
+        var result =await qiniu.Upload(buffer, "test_1.png");
+        result.Should().Contain("test_1.png");
+    }
+    [Test]
+    public async Task DeleteFileFromQiniu()
+    {
+        var path = @"D:\github\fulloflife\tests\Application.IntegrationTests\img\1.png";
+        var buffer = File.ReadAllBytes(path);
+        var qiniu = await GetRequiredService<IQiniuService>();
+        await qiniu.Upload(buffer, "test_1.png");
+        var result =await qiniu.Delete("test_1.png");
+        result.Should().Be(200);
     }
 }

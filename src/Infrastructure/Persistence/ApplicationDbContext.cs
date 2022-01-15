@@ -22,7 +22,10 @@ public class ApplicationDbContext : IdentityDbContext<
     private readonly IDateTime _dateTime;
     private readonly IDomainEventService _domainEventService;
 
+    public ApplicationDbContext()
+    {
 
+    }
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
         ICurrentUserService currentUserService,

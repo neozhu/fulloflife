@@ -156,13 +156,13 @@
   <data name="Are you sure delete checked rows?" xml:space="preserve">
     <value>Are you sure delete checked rows?</value>
   </data>
-  <data name="Delete ${checkedId.length} Success" xml:space="preserve">
+  <data name="Delete ${checkedId.length} successfully" xml:space="preserve">
     <value>Delete ${checkedId.length} Success</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
-  <data name="Export Success" xml:space="preserve">
+  <data name="Export successfully" xml:space="preserve">
     <value>Export Success</value>
   </data>
   <data name="No" xml:space="preserve">
@@ -171,7 +171,7 @@
   <data name="Please upload a file" xml:space="preserve">
     <value>Please upload a file</value>
   </data>
-  <data name="Save Success" xml:space="preserve">
+  <data name="Save successfully" xml:space="preserve">
     <value>Save Success</value>
   </data>
   <data name="Yes" xml:space="preserve">

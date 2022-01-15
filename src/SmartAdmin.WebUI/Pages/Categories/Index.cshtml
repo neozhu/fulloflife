@@ -1,23 +1,23 @@
-@page
+﻿@page
 @using CleanArchitecture.Razor.Domain.Enums
 @using Microsoft.AspNetCore.Mvc.Localization
 @using CleanArchitecture.Razor.Application.Constants.Permission
-@model SmartAdmin.WebUI.Pages.Documents.IndexModel
+@model SmartAdmin.WebUI.Pages.Categories.IndexModel
 @inject Microsoft.Extensions.Localization.IStringLocalizer<IndexModel> _localizer
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService
 @{
-    ViewData["Title"] = _localizer["Documents"].Value;
-    ViewData["PageName"] = "documents_index";
-    ViewData["Category1"] = _localizer["Documents"].Value;
-    ViewData["Heading"] = _localizer["Documents"].Value;
-    ViewData["PageDescription"] = _localizer["See all available options"].Value;
+    ViewData["Title"] = _localizer["Product Catalog"].Value;
+    ViewData["PageName"] = "categories_index";
+    ViewData["Category1"] = _localizer["Production"].Value;
+    ViewData["Heading"] = _localizer["Categories"].Value;
+    ViewData["PageDescription"] = _localizer["Product Catalog"].Value;
     ViewData["PreemptiveClass"] = "Default";
-    var _canCreate = await _authorizationService.AuthorizeAsync(User, null, Permissions.Documents.Create);
-    var _canEdit = await _authorizationService.AuthorizeAsync(User, null, Permissions.Documents.Edit);
-    var _canDelete = await _authorizationService.AuthorizeAsync(User, null, Permissions.Documents.Delete);
-    var _canSearch = await _authorizationService.AuthorizeAsync(User, null, Permissions.Documents.Search);
-    var _canExport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Documents.Export);
-    var _canDownload = await _authorizationService.AuthorizeAsync(User, null, Permissions.Documents.Download);
+    var _canCreate = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Create);
+    var _canEdit = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Edit);
+    var _canDelete = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Delete);
+    var _canSearch = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Search);
+    var _canExport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Export);
+    
 }
 @section HeadBlock {
 
@@ -27,7 +27,7 @@
     <link rel="stylesheet" media="screen,print" href="~/lib/easyui/themes/insdep/easyui.css">
     <style>
 
-        .document_dg_datagrid-cell-c1-_action {
+        .category_dg_datagrid-cell-c1-_action {
             overflow: visible !important
         }
     </style>
@@ -35,8 +35,8 @@
 <div id="js-page-content-demopanels" class="card mb-g">
     <div class="card-header bg-white d-flex align-items-center">
         <h4 class="m-0">
-            @_localizer["Documents"]
-            <small>@_localizer["See all available options"]</small>
+            @ViewData["Title"]
+            <small></small>
         </h4>
         <div class="ml-auto">
             @if (_canCreate.Succeeded)
@@ -55,9 +55,9 @@
             }
             @if (_canSearch.Succeeded)
             {
-                <button class="btn btn-sm btn-outline-primary " id="searchbutton">
-                    <span class="@(Settings.Theme.IconPrefix) fa-search mr-1"></span>
-                    @_localizer["Search"]
+                <button class="btn btn-sm btn-outline-primary " id="refreshbutton">
+                    <span class="@(Settings.Theme.IconPrefix) fa-sync mr-1"></span>
+                    @_localizer["Refresh"]
                 </button>
             }
             @if (_canExport.Succeeded)
@@ -72,14 +72,14 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-12">
-                <table id="document_dg">
+                <table id="category_dg">
                 </table>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="document_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="category_modal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Modal title</h5>
@@ -87,51 +87,43 @@
                     <span aria-hidden="true"><i class="@(Settings.Theme.IconPrefix) fa-times"></i></span>
                 </button>
             </div>
-            <form id="document_form" class="needs-validation" novalidate="novalidate">
+            <form id="category_form" class="needs-validation" novalidate="novalidate">
                 <div class="modal-body">
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Input.Id" />
+                    <input type="hidden" asp-for="Input.Icon" />
                     <div class="form-row">
                         <div class="col-md-6">
-                            <label class="form-label" for="Title">@_localizer["Title"] <span class="text-danger">*</span></label>
-                            <input type="text" asp-for="Input.Title" class="form-control" placeholder="Title" />
-                            <span class="invalid-feedback" asp-validation-for="Input.Title">Sorry, you missed this one.</span>
+                            <label class="form-label" for="Name">@_localizer["Name"] <span class="text-danger">*</span></label>
+                            <input type="text" asp-for="Input.Name" class="form-control" placeholder="@_localizer["Name"]" />
+                            <span class="invalid-feedback" asp-validation-for="Input.Name">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="DocumentTypeId">@_localizer["Document Type"] <span class="text-danger">*</span></label>
-                            <select type="text" asp-for="Input.DocumentTypeId" asp-items="Model.DocumentTypes" class="custom-select" placeholder="Document Type">
-                                <option value="">@_localizer["Choose Document Type"]</option>
-                            </select>
-                            <span class="invalid-feedback" asp-validation-for="Input.DocumentTypeId">Sorry, you missed this one.</span>
+                            <label class="form-label" for="Sequence">@_localizer["Index"]</label>
+                            <input type="number" asp-for="Input.Sequence" class="form-control" placeholder="@_localizer["Index"]" />
+                            <span class="invalid-feedback" asp-validation-for="Input.Sequence">Sorry, you missed this one.</span>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label" for="IsPublic"> </label>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" asp-for="Input.IsPublic" class="custom-control-input" value="true">
-                                <label class="custom-control-label" for="Input_IsPublic">@_localizer["Is Public"]</label>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
+                         <div class="col-md-12">
                             <label class="form-label" for=""></label>
-
-                            <input type="file" asp-for="UploadedFile" style="display:none" required />
+                            <input type="file" asp-for="UploadedFile" accept="image/png, image/gif, image/jpeg" style="display:none" required />
                             <div class="">
                                 <button name="uploadbutton" type="button" class="btn btn-primary btn-icon waves-effect waves-themed mr-2">
                                     <i class="fal fa-paperclip"></i>
-                                </button><span class="text-danger">*</span>
-                                <div id="uploadfilename">
-                                    <div class="alert alert-danger mt-2 mb-2" role="alert">
-                                        <i class="fal fa-exclamation-triangle mr-2"></i>   @_localizer["Please upload a file"].
-                                    </div>
+                                </button>
+                                <span class="text-danger">*</span>
+                                <small class="m-0 fw-300">
+                                        @_localizer["It is recommended that the size of the uploaded image be 68 × 68 pixels"]
+                                </small>
+                                <div class="flex-row mt-2 mb-2" >
+                                     <div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
+                                         <img id="product_catalog_icon" src="https://via.placeholder.com/68" alt="product catalog icon" />
+                                     </div>
                                 </div>
-
                             </div>
-
-
                         </div>
                         <div class="col-md-12">
                             <label class="form-label" for="Description">@_localizer["Description"] </label>
-                            <input type="text" asp-for="Input.Description" class="form-control" placeholder="Description" />
+                            <input type="text" asp-for="Input.Description" class="form-control" placeholder="@_localizer["Description"]" />
                             <span class="invalid-feedback" asp-validation-for="Input.Description">Sorry, you missed this one.</span>
                         </div>
                     </div>
@@ -146,8 +138,8 @@
 </div>
 @await Component.InvokeAsync("ImportExcel", new
 {
-    importUri = Url.Page("/Documents/Index") + "?handler=Import",
-    getTemplateUri = @Url.Page("/Documents/Index") + "?handler=CreateTemplate",
+    importUri = Url.Page("/Categories/Index") + "?handler=Import",
+    getTemplateUri = @Url.Page("/Categories/Index") + "?handler=CreateTemplate",
     onImportedSucceeded = "reloadData()"
 })
 @section ScriptsBlock {
@@ -162,7 +154,7 @@
 
     <script type="text/javascript">
 
-        $('#searchbutton').click(function () {
+        $('#refreshbutton').click(function () {
             reloadData();
         });
         $('#addbutton').click(function () {
@@ -174,25 +166,25 @@
         $('#exportbutton').click(function () {
             onExport();
         });
-        $('#document_form :submit').click(function (e) {
-            var form = document.querySelector('#document_form');
+        $('#category_form :submit').click(function (e) {
+            var form = document.querySelector('#category_form');
             if ($(form).valid() === false) {
                 form.classList.add('was-validated');
             } else {
                 event.preventDefault();
                 event.stopPropagation();
-                var request = $('#document_form').serialize();
+                var request = $('#category_form').serialize();
                 var formData = new FormData(form);
                 formData.append("UploadedFile", uploadfileinput.files[0]);
                 axios({
-                    url: '@Url.Page("/Documents/Index")',
+                    url: '@Url.Page("/Categories/Index")',
                     method: 'post',
                     data: formData,
                     processData: false,// 告诉axios不要去处理发送的数据(重要参数)
                     contentType: false,   // 告诉axios不要去设置Content-Type请求头
                 }).then((response) => {
-                        toastr["info"]('@_localizer["Save Success"]');
-                        $('#document_modal').modal('toggle');
+                        toastr["info"]('@_localizer["Save successfully"]');
+                        $('#category_modal').modal('toggle');
                         reloadData();
                 })
 
@@ -200,39 +192,38 @@
             event.preventDefault();
             event.stopPropagation();
         })
-        var uploadfilename = document.querySelector("#uploadfilename");
+
         var uploadbutton = document.querySelector("button[name='uploadbutton']");
+        var productcatalogicon = document.querySelector("#product_catalog_icon");
         var uploadfileinput = document.getElementById("UploadedFile");
         var savebutton = document.querySelector("button[name='savebutton']");
         uploadbutton.addEventListener('click', (e) => {
             uploadfileinput.click();
         })
         uploadfileinput.onchange = () => {
-            fileName = uploadfileinput.value.split('\\').pop();
-            uploadfilename.innerHTML = `
-              <div class="alert alert-info alert-dismissible fadeup show mb-2 mt-2" role="alert">
-                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                         <span aria-hidden="true"><i class="@(Settings.Theme.IconPrefix) fa-times"></i></span>
-                      </button>
-                      <div class="d-flex align-items-center">
-							<div class="alert-icon">
-									<i class="@(Settings.Theme.IconPrefix) fa-upload fs-xl"></i>
-							</div>
-							<div class="flex-1">
-	    							${fileName}
-							</div>
-					</div>
-             </div>
-        `
+            const filename = uploadfileinput.value.split('\\').pop();
+            const form = document.querySelector('#category_form');
+            const formData = new FormData(form);
+            formData.append("UploadedFile", uploadfileinput.files[0]);
+            axios({
+                    url: '@Url.Page("/Categories/Index")?handler=Qiniu',
+                    method: 'post',
+                    data: formData,
+                    processData: false,// 告诉axios不要去处理发送的数据(重要参数)
+                    contentType: false,   // 告诉axios不要去设置Content-Type请求头
+                }).then((response) => {
+                    const url =  response.data;
+                    $('#Input_Icon').val(url);
+                    productcatalogicon.src  = url;
+                        toastr["info"](`${filename}:@_localizer["upload to qiniu"]`);
+                })
+           
             savebutton.disabled = false;
-            $('#uploadfilename .alert').on('closed.bs.alert', (e) => {
-                uploadfileinput.value = null;
-                savebutton.disabled = true;
-            })
+            
         };
         var $dg={};
         var initdatagrid = () => {
-            $dg = $('#document_dg').datagrid({
+            $dg = $('#category_dg').datagrid({
                 height: 700,
                 method: 'GET',
                 rownumbers: false,
@@ -242,8 +233,8 @@
                 pagination: true,
                 clientPaging: false,
                 remoteFilter: true,
-                sortName: 'Id',
-                sortOrder:'desc',
+                sortName: 'Sequence',
+                sortOrder:'asc',
                 pageSize: 15,
                 pageList: [10, 15, 30, 50, 100, 1000],
                 onBeforeLoad: function () {
@@ -277,76 +268,59 @@
                                      </button>
                                      <div class="dropdown-menu dropdown-menu-animated" aria-labelledby="commandbtngroup">
                                        <button class="dropdown-item" onclick="onEdit(${index})" @(_canEdit.Succeeded? "":"disabled")><i class="fal fa-edit mr-1"></i> @_localizer["Edit"]</button>
-                                       <button class="dropdown-item" onclick="onDownload(${index})" @(_canDownload.Succeeded? "":"disabled")><i class="fal fa-download mr-1"></i> @_localizer["Download"]</button>
                                        <button class="dropdown-item" onclick="onDelete('${row.Id}')" @(_canDelete.Succeeded? "":"disabled") ><i class="fal fa-trash-alt mr-1"></i> @_localizer["Delete"]</button>
                                      </div>
                                   </div>`;
                         }
                     },
-                    { field: 'Title', title: '@_localizer["Title"]', sortable: true, width: 180 },
-                    { field: 'DocumentTypeName', title: '@_localizer["Document Type"]', sortable: true, width: 150 },
-                    { field: 'IsPublic', title: '@_localizer["Is Public"]', sortable: true, width: 120 },
-                    { field: 'Description', title: '@_localizer["Description"]', sortable: true, width: 280 },
-                    { field: 'CreatedBy', title: '@_localizer["Created By"]', sortable: true, width: 160 },
-                    { field: 'Created', title: '@_localizer["Created Time"]', formatter: dateformatter, sortable: true, width: 160 },
-
+                    { field: 'Name', title: '@_localizer["Name"]', sortable: true, width: 200 },
+                    { field: 'Description', title: '@_localizer["Description"]', sortable: true, width: 250 },
+                    { field: 'Sequence', title: '@_localizer["Index"]', sortable: true, width: 140 },
+                    { field: 'Icon', title: '@_localizer["Icon"]', sortable: true, width: 100,
+                      align: 'center',
+                      formatter:function(value) {
+                         return `<div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
+                                         <img id="product_catalog_icon" src="${value}" alt="product catalog icon" />
+                                 </div>`
+                      }
+                    },
                 ]]
             })
                 .datagrid('enableFilter', {})
-                .datagrid('load', '@Url.Page("/Documents/Index")?handler=Data');
+                .datagrid('load', '@Url.Page("/Categories/Index")?handler=Data');
 
         }
 
         var reloadData = () => {
-            $dg.datagrid('load', '@Url.Page("/Documents/Index")?handler=Data');
+            $dg.datagrid('load', '@Url.Page("/Categories/Index")?handler=Data');
         }
 
         $(() => {
             initdatagrid();
         })
-        var popupmodal = (document) => {
-            $('#document_modal').modal('toggle');
-            $('#document_modal .modal-title').html('@_localizer["Add Document"]');
-            $('#document_form').clearForm();
-            $('#document_form')[0].reset();
-            if (document) {
+        var popupmodal = (category) => {
+            $('#category_modal').modal('toggle');
+            $('#category_modal .modal-title').html('@_localizer["Add Product Catalog"]');
+            $('#category_form').clearForm();
+            $('#category_form')[0].reset();
+            if (category) {
                 uploadbutton.disabled = true;
                 uploadfileinput.required = false;
-                $('#document_modal .modal-title').html('@_localizer["Edit Document"]');
-                uploadfilename.innerHTML = `
-                  <div class="alert alert-info alert-dismissible fadeup show mb-2 mt-2" role="alert">
-                         <div class="d-flex align-items-center">
-							<div class="alert-icon">
-									<i class="@(Settings.Theme.IconPrefix) fa-upload fs-xl"></i>
-							</div>
-							<div class="flex-1">
-	    							${document.URL}
-							</div>
-					</div>
-                </div>
-                `
-                $('#document_form').jsonToForm(document, {
-                    IsPublic: function (value) {
-                        if (value == true) {
-                            $('#document_form [name*="IsPublic"]').prop('checked', true);
-                        } else {
-                            $('#document_form [name*="IsPublic"]').prop('checked', false);
-                        }
-                    }
+                $('#category_modal .modal-title').html('@_localizer["Add Product Catalog"]');
+                productcatalogicon.src = category.Icon;
+                $('#category_form').jsonToForm(category, {
                 })
             } else {
                 uploadbutton.disabled = false;
                 uploadfileinput.required = true;
-                $('#document_form #Input_Id').val(0);
-                uploadfilename.innerHTML =`<div class="alert alert-danger mt-2 mb-2" role="alert">
-                                        <i class="fal fa-exclamation-triangle mr-2"></i>   @_localizer["Please upload a file"].
-                             </div>`
+                $('#category_form #Input_Id').val(0);
+                productcatalogicon.src = "https://via.placeholder.com/68";
             }
         }
 
         var onEdit = (index) => {
-            var document = $dg.datagrid('getRows')[index];
-            popupmodal(document);
+            var category = $dg.datagrid('getRows')[index];
+            popupmodal(category);
         }
         var onDelete = (id) => {
             bootbox.confirm({
@@ -363,8 +337,8 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        axios.get('@Url.Page("/Documents/Index")?handler=Delete&id=' + id).then(res => {
-                            toastr["info"]('@_localizer["Delete Success"]');
+                        axios.get('@Url.Page("/Categories/Index")?handler=Delete&id=' + id).then(res => {
+                            toastr["info"]('@_localizer["Delete successfully"]');
                             reloadData();
                         })
                            
@@ -389,8 +363,8 @@
                     },
                     callback: function (result) {
                         if (result) {
-                            axios.post('@Url.Page("/Documents/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
-                                toastr["info"](`@_localizer["Delete ${checkedId.length} Success"]`);
+                            axios.post('@Url.Page("/Categories/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
+                                toastr["info"](`@_localizer["Delete ${checkedId.length} successfully"]`);
                                 reloadData();
                             })
                                
@@ -408,20 +382,20 @@
                 order: options.sortOrder,
             }
 
-            axios.post('@Url.Page("/Documents/Index")?handler=Export',
+            axios.post('@Url.Page("/Categories/Index")?handler=Export',
                 data,
                 {
                     responseType: "blob"
                 })
                 .then(response => {
                     const filename = getFileName(response.headers['content-disposition']);
-                    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' }));
-                    const link = document.createElement('a');
+                    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officecategory.spreadsheetml.sheet;charset=utf-8' }));
+                    const link = category.createElement('a');
                     link.href = url;
                     link.setAttribute('download', filename);
-                    document.body.appendChild(link);
+                    category.body.appendChild(link);
                     link.click();
-                    toastr["info"](`@_localizer["Export Success"]`);
+                    toastr["info"](`@_localizer["Export successfully"]`);
                 })
 
 
@@ -430,12 +404,12 @@
             const item = $dg.datagrid('getRows')[index];
             const url = item.URL;
             const filename = getFileName(item.URL);
-            const link = document.createElement('a');
+            const link = category.createElement('a');
             link.href = url;
             link.setAttribute('download', filename);
-            document.body.appendChild(link);
+            category.body.appendChild(link);
             link.click();
-            toastr["info"](`@_localizer["Download Success"]`);
+            toastr["info"](`@_localizer["Download successfully"]`);
         }
 
 

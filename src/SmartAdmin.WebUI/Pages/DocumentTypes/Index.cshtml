@@ -1,4 +1,4 @@
-@page
+﻿@page
 
 @using CleanArchitecture.Razor.Application.Constants.Permission
 @model SmartAdmin.WebUI.Pages.DocumentTypes.IndexModel
@@ -167,7 +167,7 @@
             } else {
                 var request = $('#documentType_form').serialize();
                 axios.post('/DocumentTypes/Index', request).then(res => {
-                    toastr["info"]('@_localizer["Save Success"]');
+                    toastr["info"]('@_localizer["Save successfully"]');
                     $('#documentType_modal').modal('toggle');
                     reloadData();
                 })
@@ -278,7 +278,7 @@
                 callback: function (result) {
                     if (result) {
                         axios.get('@Url.Page("/DocumentTypes/Index")?handler=Delete&id=' + id).then(res => {
-                            toastr["info"]('@_localizer["Delete Success"]');
+                            toastr["info"]('@_localizer["Delete successfully"]');
                             reloadData();
                         })
              
@@ -304,7 +304,7 @@
                     callback: function (result) {
                         if (result) {
                            axios.post('@Url.Page("/DocumentTypes/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
-                                toastr["info"](`@_localizer["Delete ${checkedId.length} Success"]`);
+                                toastr["info"](`@_localizer["Delete ${checkedId.length} successfully"]`);
                                 reloadData();
                             })
                                 
@@ -334,7 +334,7 @@
                     link.setAttribute('download', filename);
                     document.body.appendChild(link);
                     link.click();
-                    toastr["info"](`@_localizer["Export Success"]`);
+                    toastr["info"](`@_localizer["Export successfully"]`);
                 })
 
 
