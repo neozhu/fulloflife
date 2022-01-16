@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Razor.Application.Features.DocumentTypes.DTOs;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
 using CleanArchitecture.Razor.Application.Features.DocumentTypes.Caching;
 
 namespace CleanArchitecture.Razor.Application.Features.DocumentTypes.Queries.PaginationQuery;
@@ -12,7 +10,7 @@ public class DocumentTypesWithPaginationQuery : PaginationRequest, IRequest<Pagi
 {
     public string CacheKey => $"DocumentTypesWithPaginationQuery,{this.ToString()}";
 
-    public MemoryCacheEntryOptions Options => new MemoryCacheEntryOptions().AddExpirationToken(new CancellationChangeToken(DocumentTypeCacheTokenSource.ResetCacheToken.Token));
+    public MemoryCacheEntryOptions Options => DocumentTypeCacheKey.MemoryCacheEntryOptions;
 }
 public class DocumentTypesQueryHandler : IRequestHandler<DocumentTypesWithPaginationQuery, PaginatedData<DocumentTypeDto>>
 {

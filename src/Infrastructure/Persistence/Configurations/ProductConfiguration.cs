@@ -6,6 +6,7 @@ using CleanArchitecture.Razor.Domain.Entities;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static CleanArchitecture.Razor.Domain.Entities.Product;
 
 namespace CleanArchitecture.Infrastructure.Persistence.Configurations;
 
@@ -17,10 +18,20 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(e => e.Options)
            .HasConversion(
                  v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                 v => JsonSerializer.Deserialize<Dictionary<string, decimal?>>(v, (JsonSerializerOptions)null)
+                 v => JsonSerializer.Deserialize<Dictionary<string, IList<SKU>>>(v, (JsonSerializerOptions)null)
                 );
 
-        builder.Property(u => u.Pictures)
+        builder.Property(u => u.Images)
+            .HasConversion(
+                d => JsonSerializer.Serialize(d, (JsonSerializerOptions)null),
+                s => JsonSerializer.Deserialize<string[]>(s, (JsonSerializerOptions)null)
+            );
+        builder.Property(u => u.SmalllImages)
+            .HasConversion(
+                d => JsonSerializer.Serialize(d, (JsonSerializerOptions)null),
+                s => JsonSerializer.Deserialize<string[]>(s, (JsonSerializerOptions)null)
+            );
+        builder.Property(u => u.Labels)
             .HasConversion(
                 d => JsonSerializer.Serialize(d, (JsonSerializerOptions)null),
                 s => JsonSerializer.Deserialize<string[]>(s, (JsonSerializerOptions)null)

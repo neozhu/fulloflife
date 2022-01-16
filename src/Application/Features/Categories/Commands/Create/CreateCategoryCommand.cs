@@ -10,7 +10,7 @@ public class CreateCategoryCommand : CategoryDto, IRequest<Result<int>>, IMapFro
 {
     public string CacheKey => nameof(CreateCategoryCommand);
 
-    public CancellationTokenSource ResetCacheToken => CategoryCacheTokenSource.ResetCacheToken;
+    public CancellationTokenSource ResetCacheToken => CategoryCacheKey.ResetCacheToken;
 }
 
 public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Result<int>>

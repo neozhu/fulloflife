@@ -17,7 +17,7 @@ public class ImportCategoriesCommand : IRequest<Result>, ICacheInvalidator
     public byte[] Data { get; set; }
     public string CacheKey => nameof(ImportCategoriesCommand);
 
-    public CancellationTokenSource ResetCacheToken => CategoryCacheTokenSource.ResetCacheToken;
+    public CancellationTokenSource ResetCacheToken => CategoryCacheKey.ResetCacheToken;
 }
 public class CreateCategoriesTemplateCommand : IRequest<byte[]>
 {

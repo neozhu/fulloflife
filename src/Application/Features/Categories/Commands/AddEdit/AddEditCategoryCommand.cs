@@ -11,7 +11,7 @@ public class AddEditCategoryCommand : CategoryDto, IRequest<Result<int>>, IMapFr
 {
     public string CacheKey => nameof(AddEditCategoryCommand);
 
-    public CancellationTokenSource ResetCacheToken => CategoryCacheTokenSource.ResetCacheToken;
+    public CancellationTokenSource ResetCacheToken => CategoryCacheKey.ResetCacheToken;
 }
 
 public class AddEditCategoryCommandHandler : IRequestHandler<AddEditCategoryCommand, Result<int>>

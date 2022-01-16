@@ -3,7 +3,6 @@
 
 using CleanArchitecture.Razor.Application.Features.KeyValues.Caching;
 using CleanArchitecture.Razor.Application.Features.KeyValues.DTOs;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CleanArchitecture.Razor.Application.Features.KeyValues.Queries.ByName;
 

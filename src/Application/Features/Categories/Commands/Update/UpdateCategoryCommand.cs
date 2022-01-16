@@ -10,7 +10,7 @@ public class UpdateCategoryCommand : CategoryDto, IRequest<Result>, IMapFrom<Cat
 {
     public string CacheKey => nameof(UpdateCategoryCommand);
 
-    public CancellationTokenSource ResetCacheToken => CategoryCacheTokenSource.ResetCacheToken;
+    public CancellationTokenSource ResetCacheToken => CategoryCacheKey.ResetCacheToken;
 }
 
 public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, Result>

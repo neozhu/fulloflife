@@ -3,8 +3,6 @@
 
 using CleanArchitecture.Razor.Application.Features.Categories.Caching;
 using CleanArchitecture.Razor.Application.Features.Categories.DTOs;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
 
 namespace CleanArchitecture.Razor.Application.Features.Categories.Queries.Pagination;
 
@@ -12,8 +10,7 @@ public class CategoriesWithPaginationQuery : PaginationRequest, IRequest<Paginat
 {
     public string CacheKey => $"{nameof(CategoriesWithPaginationQuery)},{this.ToString()}";
 
-    public MemoryCacheEntryOptions Options => new MemoryCacheEntryOptions()
-        .AddExpirationToken(new CancellationChangeToken(CategoryCacheTokenSource.ResetCacheToken.Token));
+    public MemoryCacheEntryOptions Options => CategoryCacheKey.MemoryCacheEntryOptions;
 
 }
 

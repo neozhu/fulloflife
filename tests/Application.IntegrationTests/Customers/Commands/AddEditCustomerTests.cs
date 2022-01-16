@@ -45,6 +45,7 @@ public class AddEditCustomerTests : TestBase
         item.Should().NotBeNull();
         item.Id.Should().Be(result.Data);
         item.Name.Should().Be(command.Name);
+        item.GroupName.Should().Be(command.GroupName);
         item.CreatedBy.Should().Be(userId);
         item.Created.Should().BeCloseTo(DateTime.Now, new TimeSpan(0, 0, 10));
         item.LastModifiedBy.Should().BeNull();

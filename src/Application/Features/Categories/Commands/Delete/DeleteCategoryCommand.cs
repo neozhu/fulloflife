@@ -10,14 +10,14 @@ public class DeleteCategoryCommand : IRequest<Result>, ICacheInvalidator
     public int Id { get; set; }
     public string CacheKey => nameof(DeleteCategoryCommand);
 
-    public CancellationTokenSource ResetCacheToken => CategoryCacheTokenSource.ResetCacheToken;
+    public CancellationTokenSource ResetCacheToken => CategoryCacheKey.ResetCacheToken;
 }
 public class DeleteCheckedCategoriesCommand : IRequest<Result>, ICacheInvalidator
 {
     public int[] Id { get; set; }
     public string CacheKey => nameof(DeleteCheckedCategoriesCommand);
 
-    public CancellationTokenSource ResetCacheToken => CategoryCacheTokenSource.ResetCacheToken;
+    public CancellationTokenSource ResetCacheToken => CategoryCacheKey.ResetCacheToken;
 }
 
 public class DeleteCategoryCommandHandler :

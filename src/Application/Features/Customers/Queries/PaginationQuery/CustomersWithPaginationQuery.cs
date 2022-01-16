@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Razor.Application.Features.Customers.DTOs;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
 using CleanArchitecture.Razor.Application.Features.Customers.Caching;
 
 namespace CleanArchitecture.Razor.Application.Features.Customers.Queries.PaginationQuery;
@@ -12,7 +10,7 @@ public class CustomersWithPaginationQuery : PaginationRequest, IRequest<Paginate
 {
     public string CacheKey => CustomerCacheKey.GetPaginationCacheKey(this.ToString());
 
-    public MemoryCacheEntryOptions Options => new MemoryCacheEntryOptions().AddExpirationToken(new CancellationChangeToken(CustomerCacheTokenSource.ResetCacheToken.Token));
+    public MemoryCacheEntryOptions Options => CustomerCacheKey.MemoryCacheEntryOptions;
 
 }
 public class CustomersWithPaginationQueryHandler : IRequestHandler<CustomersWithPaginationQuery, PaginatedData<CustomerDto>>

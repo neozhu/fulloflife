@@ -3,8 +3,6 @@
 
 using CleanArchitecture.Razor.Application.Features.KeyValues.Caching;
 using CleanArchitecture.Razor.Application.Features.KeyValues.DTOs;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
 
 namespace CleanArchitecture.Razor.Application.Features.KeyValues.Queries.ByName;
 
@@ -14,7 +12,7 @@ public class KeyValuesQueryByName : IRequest<IEnumerable<KeyValueDto>>, ICacheab
 
     public string CacheKey => KeyValueCacheKey.GetCacheKey(Name);
 
-    public MemoryCacheEntryOptions Options => new MemoryCacheEntryOptions().AddExpirationToken(new CancellationChangeToken(KeyValueCacheTokenSource.ResetCacheToken.Token));
+    public MemoryCacheEntryOptions Options => KeyValueCacheKey.MemoryCacheEntryOptions;
 }
 public class KeyValuesQueryByNameHandler : IRequestHandler<KeyValuesQueryByName, IEnumerable<KeyValueDto>>
 {
