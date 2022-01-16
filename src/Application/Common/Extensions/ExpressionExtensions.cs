@@ -12,7 +12,7 @@ namespace CleanArchitecture.Razor.Application.Common.Extensions;
 
 public static class PredicateBuilder
 {
-    public static Expression<Func<T, bool>> FromFilter<T>(string filters)
+    public static Expression<Func<T, bool>> FromFilter<T>(string? filters)
     {
         Expression<Func<T, bool>> any = x => true;
         if (!string.IsNullOrEmpty(filters))

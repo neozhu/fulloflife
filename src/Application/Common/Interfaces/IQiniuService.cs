@@ -5,6 +5,6 @@ namespace CleanArchitecture.Razor.Application.Common.Interfaces;
 
 public interface IQiniuService
 {
-    Task<string> Upload(byte[] data,string fileName);
+    Task<string> Upload(byte[] data, string fileName);
     Task<int> Delete(string key);
 }

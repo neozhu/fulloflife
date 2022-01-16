@@ -23,7 +23,7 @@ public class Product : AuditableEntity
     public int StockQty { get; set; }
     public int SalesQty { get; set; }
     public string[]? Images { get; set; }
-    public string[]? SmalllImages { get; set; }
+    public string[]? SmallImages { get; set; }
 
     public class SKU
     {

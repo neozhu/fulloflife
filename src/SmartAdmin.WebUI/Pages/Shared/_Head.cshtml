@@ -1,6 +1,6 @@
 ﻿<meta charset="utf-8">
 <title>
-@if (ViewBag.Title?.Length > 0)
+@if (ViewData["Title"] is not null )
 {
 	<text>@ViewData["Title"] @(ViewData["Category1"]!=null?(" - "  + ViewData["Category1"]):"") - @Settings.App v@(Settings.Version)</text>
 } else {
@@ -8,7 +8,7 @@
 }
 </title>
 <base href="~/"/>
-<meta name="description" content="@ViewBag.Title">
+<meta name="description" content="@ViewData["Title"]">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
 <meta name="apple-mobile-web-app-capable" content="yes" />

@@ -45,7 +45,7 @@ public class QiniuService : IQiniuService
         string key = fileName;
 
         // 存储空间名
-        string Bucket = _qiniuSetting.Bucket;
+        var Bucket = _qiniuSetting.Bucket;
         // 设置上传策略
         var putPolicy = new PutPolicy();
         // 设置要上传的目标空间
@@ -56,7 +56,7 @@ public class QiniuService : IQiniuService
         putPolicy.DeleteAfterDays = 0;
         // 生成上传token
         string token = Auth.CreateUploadToken(mac, putPolicy.ToJsonString());
-        Config config = new Config();
+        var config = new Config();
         // 设置上传区域
         config.Zone = Zone.ZONE_CN_East;
         // 设置 http 或者 https 上传
@@ -64,7 +64,7 @@ public class QiniuService : IQiniuService
         config.UseCdnDomains = true;
         config.ChunkSize = ChunkUnit.U512K;
         // 表单上传
-        FormUploader target = new FormUploader(config);
+        var target = new FormUploader(config);
         var httpresult = target.UploadData(data, key, token, null);
         var result = JsonSerializer.Deserialize<result>(httpresult.Text);
         Console.WriteLine("form upload result: " + httpresult.ToString());
