@@ -248,6 +248,7 @@
         onExport();
     });
     $('#product_form :submit').click(function (e) {
+        getproductoptions()
         var form = document.querySelector('#product_form');
         if ($(form).valid() === false) {
             form.classList.add('was-validated');
@@ -290,7 +291,7 @@
                         <td><buttn type="buttton" onclick="deleteoptions(this)" class="btn btn-danger btn-icon waves-effect waves-themed __web-inspector-hide-shortcut__">
                                                         <i class="fal fa-times"></i>
                                </a></td>
-                 </tr>`) 
+           </tr>`) 
     })
     uploadfileinput.onchange = () => {
         const filename = uploadfileinput.value.split('\\').pop();
@@ -326,6 +327,19 @@
         savebutton.disabled = false;
 
     };
+    var getproductoptions = () => {
+        let options=[];
+        $('#productoptions > tbody  > tr').each(function(index,tr){
+            var group = $(tr).find('input[name="group"]').val();
+            var productname = $(tr).find('input[name="productName"]').val();
+            var price = $(tr).find('input[name="price"]').val();
+            if(group.length > 0 && productname.length >0 ){
+                options.push({Group:group,Name:productname,Price:price });
+            }
+        })
+        return _.groupBy(options,'Group'))
+
+    }
     var deleteoptions = (obj) => {
          var tr=obj.parentNode.parentNode;
          tr.parentNode.removeChild(tr);

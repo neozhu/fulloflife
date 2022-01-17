@@ -65,5 +65,23 @@
         "min/numeral.min.js"
       ]
     }
+  ,
+{
+  "provider": "jsdelivr",
+  "library": "lodash@4.17.21",
+  "destination": "wwwroot/lib/lodash/",
+  "files": [
+    "fp/__.min.js"
   ]
+}
+,
+{
+  "provider": "cdnjs",
+  "library": "lodash.js@4.17.21",
+  "destination": "wwwroot/lib/lodash/lodash.js/",
+  "files": [
+    "lodash.min.js"
+  ]
+}
+]
 }
