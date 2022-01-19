@@ -41,6 +41,7 @@
     <Folder Include="Properties\" />
     <Folder Include="wwwroot\lib\easyui\" />
     <Folder Include="wwwroot\lib\jquery-form\" />
+    <Folder Include="wwwroot\lib\jquery.serializejson\" />
     <Folder Include="wwwroot\lib\tagin\" />
     <None Update="Files\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

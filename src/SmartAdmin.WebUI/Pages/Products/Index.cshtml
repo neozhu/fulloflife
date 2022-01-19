@@ -102,37 +102,37 @@
                         </div>
                         <div class="col-md-6 mb-1">
                             <label class="form-label" asp-for="Input.Sort">@_localizer["Sort"] <span class="text-danger">*</span></label>
-                            <input type="number" asp-for="Input.Sort" class="form-control" placeholder="@_localizer["Sort"]" />
+                            <input type="number" asp-for="Input.Sort" class="form-control" placeholder="@_localizer["Sort"]" autocomplete="off" />
                             <span class="invalid-feedback" asp-validation-for="Input.Sort">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-12 mb-1">
                             <label class="form-label" asp-for="Input.Name">@_localizer["Name"] <span class="text-danger">*</span></label>
-                            <input type="text" asp-for="Input.Name" class="form-control" placeholder="@_localizer["Name"]" />
+                            <input type="text" asp-for="Input.Name" class="form-control" placeholder="@_localizer["Name"]" autocomplete="off"/>
                             <span class="invalid-feedback" asp-validation-for="Input.Name">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-12 mb-1">
                             <label class="form-label" asp-for="Input.Description">@_localizer["Description"] </label>
-                            <textarea type="text" asp-for="Input.Description" class="form-control" rows="3" placeholder="@_localizer["Description"]"></textarea>
+                            <textarea type="text" asp-for="Input.Description" class="form-control" rows="3" placeholder="@_localizer["Description"]" autocomplete="off"></textarea>
                             <span class="invalid-feedback" asp-validation-for="Input.Description">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-12 mb-1">
                             <label class="form-label" asp-for="Input.Labels">@_localizer["Labels"]</label>
-                            <input type="text" asp-for="Input.Labels" class="form-control tagin" placeholder="@_localizer["Labels"]" />
+                            <input type="text" asp-for="Input.Labels" class="form-control tagin" placeholder="@_localizer["Labels"]" autocomplete="off"/>
                             <span class="invalid-feedback" asp-validation-for="Input.Labels">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-4 mb-1">
                             <label class="form-label" asp-for="Input.Cost">@_localizer["Cost"]</label>
-                            <input type="number" asp-for="Input.Cost" class="form-control" placeholder="@_localizer["Price"]" />
+                            <input type="number" asp-for="Input.Cost" class="form-control" placeholder="@_localizer["Price"]" autocomplete="off"/>
                             <span class="invalid-feedback" asp-validation-for="Input.Cost">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-4 mb-1">
                             <label class="form-label" asp-for="Input.Price">@_localizer["Price"]</label>
-                            <input type="number" asp-for="Input.Price" class="form-control" placeholder="@_localizer["Price"]" />
+                            <input type="number" asp-for="Input.Price" class="form-control" placeholder="@_localizer["Price"]" autocomplete="off"/>
                             <span class="invalid-feedback" asp-validation-for="Input.Price">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-4 mb-1">
                             <label class="form-label" asp-for="Input.StockQty">@_localizer["Stock Qty"]</label>
-                            <input type="number" asp-for="Input.StockQty" class="form-control" placeholder="@_localizer["Stock Qty"]" />
+                            <input type="number" asp-for="Input.StockQty" class="form-control" placeholder="@_localizer["Stock Qty"]" autocomplete="off"/>
                             <span class="invalid-feedback" asp-validation-for="Input.StockQty">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-4 mb-1">
@@ -204,7 +204,7 @@
 
                         <div class="col-md-12 mb-1">
                             <label class="form-label" asp-for="Input.Remark">@_localizer["Remark"]</label>
-                            <input type="text" asp-for="Input.Remark" class="form-control" placeholder="@_localizer["Remark"]" />
+                            <input type="text" asp-for="Input.Remark" class="form-control" placeholder="@_localizer["Remark"]" autocomplete="off"/>
                             <span class="invalid-feedback" asp-validation-for="Input.Remark">Sorry, you missed this one.</span>
                         </div>
                     </div>
@@ -225,6 +225,7 @@
 })
 @section ScriptsBlock {
 <partial name="_ValidationScriptsPartial" />
+<script type="text/javascript" src="~/lib/jquery.serializejson/jquery.serializejson.min.js"></script>
 <script type="text/javascript" src="~/lib/easyui/jquery.easyui.min.js" asp-append-version="true"></script>
 <script type="text/javascript" src="~/lib/easyui/plugins/datagrid-filter.js" asp-append-version="true"></script>
 <script type="text/javascript" src="~/lib/easyui/jquery.easyui.component.js" asp-append-version="true"></script>
@@ -233,8 +234,12 @@
 <script src="~/lib/jquery-form/jquery.jsonToForm.js"></script>
 <script type="text/javascript" src="~/lib/tagin/tagin.js" asp-append-version="true"></script>
 <script type="text/javascript">
-    var taglabels = new Tagin(document.querySelector('.tagin'))
-    var select2 = $('.select2').select2({dropdownParent: $('#product_modal')});
+    var taglabels,select2
+     $(() => {
+        initdatagrid();
+         taglabels = new Tagin(document.querySelector('.tagin'))
+         select2 = $('.select2').select2({dropdownParent: $('#product_modal')});
+    })
     $('#refreshbutton').click(function () {
         reloadData();
     });
@@ -248,27 +253,22 @@
         onExport();
     });
     $('#product_form :submit').click(function (e) {
-        getproductoptions()
         var form = document.querySelector('#product_form');
         if ($(form).valid() === false) {
             form.classList.add('was-validated');
         } else {
             event.preventDefault();
             event.stopPropagation();
-            var request = $('#product_form').serialize();
             var formData = new FormData(form);
-            formData.append("UploadedFile", uploadfileinput.files[0]);
-            axios({
-                url: '@Url.Page("/Products/Index")',
-                method: 'post',
-                data: formData,
-                processData: false,// 告诉axios不要去处理发送的数据(重要参数)
-                contentType: false,   // 告诉axios不要去设置Content-Type请求头
-            }).then((response) => {
+            console.log(JSON.stringify(taglabels.getTags()),getproductoptions())
+            formData.set("Input.Options",JSON.stringify(getproductoptions()));
+            formData.set("Input.Labels",JSON.stringify(taglabels.getTags()))
+            axios.post('@Url.Page("/Products/Index")',formData).then((response) => {
                     toastr["info"]('@_localizer["Save successfully"]');
                     $('#product_modal').modal('toggle');
                     reloadData();
             })
+             
 
         }
         event.preventDefault();
@@ -314,12 +314,7 @@
                 $('#Input_Images').val(JSON.stringify(images));
                 $('#Input_SmallImages').val(JSON.stringify(smallimages));
                 if(images.length > 0) {
-                    $(productimages).empty();
-                    images.map(item => {
-                        $(productimages).append(`<div class="rounded width-20 height-15 d-inline-block bg-faded shadow-2 mr-2">
-                                        <img class="width-20 height-15" src="${item}" alt="product image" />
-                                    </div>`)
-                  });
+                    setproductimages(images);
                 }
                 toastr["info"](`${images.length} @_localizer["images upload to qiniu"]`);
             })
@@ -334,11 +329,34 @@
             var productname = $(tr).find('input[name="productName"]').val();
             var price = $(tr).find('input[name="price"]').val();
             if(group.length > 0 && productname.length >0 ){
-                options.push({Group:group,Name:productname,Price:price });
+                options.push({Group:group,Name:productname,Price:numeral(price).value() });
             }
         })
-        return _.groupBy(options,'Group'))
+        return _.groupBy(options,'Group')
 
+    }
+    var setproductoptions = (options) => {
+       $('#productoptions > tbody').empty();
+        _.forEach(options,(items,key) => {
+            _.forEach(items,(item,index)=>{
+                $('#productoptions > tbody').append(`<tr>
+                        <td><input type="text" name="group" class="form-control" placeholder="@_localizer["Product Group"]" required="" value='${key}' /></td>
+                        <td><input type="text" name="productName" class="form-control" placeholder="@_localizer["Product Name"]" required="" value='${item.Name}' /></td>
+                        <td><input type="number" name="price" class="form-control" placeholder="@_localizer["Price"]" value='${item.Price}' /></td>
+                        <td><buttn type="buttton" onclick="deleteoptions(this)" class="btn btn-danger btn-icon waves-effect waves-themed __web-inspector-hide-shortcut__">
+                                                        <i class="fal fa-times"></i>
+                               </a></td>
+                 </tr>`)
+            });
+        });
+    }
+    var setproductimages = (images) => {
+        $(productimages).empty();
+        _.forEach(images,(item,index) => {
+                        $(productimages).append(`<div class="rounded width-20 height-15 d-inline-block bg-faded shadow-2 mr-2">
+                                        <img class="width-20 height-15" src="${item}" alt="product image" />
+                                    </div>`)
+                    });
     }
     var deleteoptions = (obj) => {
          var tr=obj.parentNode.parentNode;
@@ -397,13 +415,14 @@
                     }
                 },
                 { field: 'CategoryName', title: '@_localizer["Product Catalog"]', sortable: true, width: 150 },
-                { field: 'Images', title: '@_localizer["Images"]', sortable: true, width: 100,
+                { field: 'SmallImages', title: '@_localizer["Images"]', sortable: true, width: 150,
                   align: 'center',
                   formatter:function(value) {
                      if(value){
-                         const src = value.split(',')[0]
-                          return `<div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
-                                     <img  src="${src}" alt="product image" />
+                         const src = JSON.parse(value)[0];
+                         console.log(src)
+                          return `<div class="rounded width-15 height-10 d-inline-block bg-faded shadow-1 m-1">
+                                     <img class="width-15 height-10" src="${src}" alt="product image" />
                              </div>`
                      }
 
@@ -418,10 +437,20 @@
                   }
                 },
                 { field: 'Sort', title: '@_localizer["Sort"]', sortable: true, width: 100, align:'right' },
-                { field: 'IsNew', title: '@_localizer["Is New"]', sortable: true, width: 120 },
-                { field: 'IsEnable', title: '@_localizer["Is Enable"]', sortable: true, width: 120 },
-                { field: 'Options', title: '@_localizer["Product Options"]', sortable: true, width: 200 },
-                { field: 'Labels', title: '@_localizer["Labels"]', sortable: true, width: 180 },
+                { field: 'IsNew', title: '@_localizer["Is New"]', sortable: true, width: 120,align: 'center', formatter:checkboxformatter },
+                { field: 'IsEnable', title: '@_localizer["Is Enable"]', sortable: true, width: 120 ,align: 'center', formatter:checkboxformatter},
+                { field: 'Labels', title: '@_localizer["Labels"]', sortable: true, width: 180,
+                  formatter:function(value){
+                      if(value){
+                         const tags = JSON.parse(value);
+                         let labels='';
+                         _.forEach(tags,(item)=>{
+                             labels +=`<span class="badge badge-info">${item}</span> `;
+                         })
+                         return labels;
+                     }
+                  }
+                },
                 { field: 'Price', title: '@_localizer["Price"]', sortable: true, width: 160,
                   formatter:function(v){
                       return numeral(v).format('0,0.0');
@@ -447,34 +476,74 @@
         })
             .datagrid('enableFilter', {})
             .datagrid('load', '@Url.Page("/Products/Index")?handler=Data');
-
     }
 
     var reloadData = () => {
         $dg.datagrid('load', '@Url.Page("/Products/Index")?handler=Data');
     }
 
-    $(() => {
-
-        initdatagrid();
-    })
+   
     var popupmodal = (product) => {
         $('#product_modal').modal('toggle');
         $('#product_modal .modal-title').html('@_localizer["Add Product"]');
         $('#product_form').clearForm();
         $('#product_form')[0].reset();
         if (product) {
-            uploadbutton.disabled = true;
+            //uploadbutton.disabled = true;
             uploadfileinput.required = false;
             $('#product_modal .modal-title').html('@_localizer["Add Product"]');
-
             $('#product_form').jsonToForm(product, {
+                Options:function(value){
+                    if(value){
+                       const op = JSON.parse(value);
+                       setproductoptions(op);
+                    }
+                },
+                Labels:function(value){
+                    if(value) {
+                        taglabels.addTag(JSON.parse(value))
+                    }else {
+                        taglabels.addTag(null)
+                    }
+                },
+                Images:function(value){
+                    $('#Input_Images').val(value)
+                    if(value){
+                        const images=JSON.parse(value);
+                        setproductimages(images);
+                    }
+                },
+                IsNew:function(value){
+                    if(value){
+                        $('#Input_IsNew').attr("checked", value);
+                    }else{
+                        $('#Input_IsNew').attr("checked", false);
+                    }
+                },
+                IsEnable:function(value){
+                    if(value){
+                        $('#Input_IsEnable').attr("checked", value);
+                    }else{
+                        $('#Input_IsEnable').attr("checked", false);
+                    }
+                },
+                IsSingle:function(value){
+                    if(value){
+                        $('#Input_IsSingle').attr("checked", value);
+                    }else{
+                        $('#Input_IsSingle').attr("checked", false);
+                    }
+                }
             })
         } else {
             uploadbutton.disabled = false;
             uploadfileinput.required = true;
             $('#product_form #Input_Id').val(0);
-
+            $('#Input_IsSingle').attr("checked", false);
+            $('#Input_IsEnable').attr("checked", false);
+            $('#Input_IsNew').attr("checked", false);
+            taglabels.remove()
+            setproductoptions([]);
         }
     }
 
@@ -557,8 +626,6 @@
                 link.click();
                 toastr["info"](`@_localizer["Export successfully"]`);
             })
-
-
     }
     var onDownload = (index) => {
         const item = $dg.datagrid('getRows')[index];

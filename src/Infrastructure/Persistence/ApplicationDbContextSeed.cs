@@ -98,13 +98,13 @@ public static class ApplicationDbContextSeed
             context.Customers.Add(new Domain.Entities.Customer() { Name = "SmartAdmin", AddressOfEnglish = "https://wrapbootstrap.com/theme/smartadmin-responsive-webapp-WB0573SK0", GroupName = "SmartAdmin", Address = "https://wrapbootstrap.com/theme/smartadmin-responsive-webapp-WB0573SK0", Sales = "GotBootstrap", RegionSalesDirector = "GotBootstrap", Region = "CNC", NameOfEnglish = "SmartAdmin", PartnerType = Domain.Enums.PartnerType.TP, Contact = "GotBootstrap", Email = "drlantern@gotbootstrap.com" });
             await context.SaveChangesAsync();
 
-            context.Loggers.Add(new Domain.Entities.Log.Logger() { Message = "Initial add customer", Level = "Information", UserName = "System", TimeStamp = System.DateTime.Now });
-
-            context.Loggers.Add(new Domain.Entities.Log.Logger() { Message = "Debug", Level = "Debug", UserName = "System", TimeStamp = System.DateTime.Now.AddHours(-1) });
-            context.Loggers.Add(new Domain.Entities.Log.Logger() { Message = "Error", Level = "Error", UserName = "System", TimeStamp = System.DateTime.Now.AddHours(-1) });
-            context.Loggers.Add(new Domain.Entities.Log.Logger() { Message = "Warning", Level = "Warning", UserName = "System", TimeStamp = System.DateTime.Now.AddHours(-2) });
-            context.Loggers.Add(new Domain.Entities.Log.Logger() { Message = "Trace", Level = "Trace", UserName = "System", TimeStamp = System.DateTime.Now.AddHours(-4) });
-            context.Loggers.Add(new Domain.Entities.Log.Logger() { Message = "Fatal", Level = "Fatal", UserName = "System", TimeStamp = System.DateTime.Now.AddHours(-4) });
+         
+        }
+        if (!context.Categories.Any())
+        {
+            context.Categories.Add(new Domain.Entities.Category() { Name = "蔬菜", Description = "自产自销", Icon = "https://fulloflifeimg.dotnet6.cn/product_catalog_637781721342302652_vegetable.jpg", Sequence = 1 });
+            context.Categories.Add(new Domain.Entities.Category() { Name = "蛋类", Description = "自产自销", Icon = "https://fulloflifeimg.dotnet6.cn/product_catalog_637781723056165385_egg.png", Sequence = 2 });
+            context.Categories.Add(new Domain.Entities.Category() { Name = "腌菜", Description = "自产自销", Icon = "https://fulloflifeimg.dotnet6.cn/product_catalog_637781723241360428_pickles.jpg", Sequence = 2 });
             await context.SaveChangesAsync();
         }
     }

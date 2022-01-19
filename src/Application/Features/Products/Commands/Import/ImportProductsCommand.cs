@@ -60,7 +60,7 @@ public class ImportProductsCommandHandler :
             { _localizer["SalesQty"], (row,item) => item.SalesQty =Convert.ToInt32(row[_localizer["Name"]]?.ToString()) },
             { _localizer["Images"], (row,item) => item.Images =row[_localizer["Images"]]?.ToString() },
             { _localizer["Small Images"], (row,item) => item.SmallImages =row[_localizer["Small Images"]]?.ToString() },
-            { _localizer["Options"], (row,item) => item.Options = JsonSerializer.Deserialize<Dictionary<string,IList<SKU>?>>(row[_localizer["Options"]]?.ToString()) },
+            { _localizer["Options"], (row,item) => item.Options = row[_localizer["Options"]]?.ToString() },
 
         }, _localizer[nameof(Product)]);
         return Result.Success();
