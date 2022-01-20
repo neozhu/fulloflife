@@ -16,4 +16,6 @@ public interface IIdentityService : IService
     Task<Result> DeleteUserAsync(string userId);
     Task<IDictionary<string, string>> FetchUsers(string roleName);
     Task<string> UpdateLiveStatus(string userId, bool isLive);
+
+    Task<bool> RegisterUser(string nickName, string avatarUrl, int gender, string country, string province, string city, string language);
 }
