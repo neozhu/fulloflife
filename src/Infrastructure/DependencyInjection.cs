@@ -10,11 +10,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
 using FluentValidation.AspNetCore;
+using NSwag;
+using NSwag.Generation.Processors.Security;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CleanArchitecture.Razor.Infrastructure;
 
 public static class DependencyInjection
 {
+    public static object Configuration { get; private set; }
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         if (configuration.GetValue<bool>("UseInMemoryDatabase"))
@@ -63,7 +72,43 @@ public static class DependencyInjection
         services.Configure<QiniuSettings>(configuration.GetSection("QiniuSettings"));
         services.AddTransient<IMailService, SMTPMailService>();
         services.AddTransient<IDictionaryService, DictionaryService>();
-        services.AddAuthentication();
+        services.AddAuthentication().AddCookie(options =>
+        {
+            options.LoginPath = "/Identity/Account/Login";
+            options.LogoutPath = "/Identity/Account/Logout";
+            options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+        }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
+            var key = configuration.GetSection("AppConfigurationSettings:Secret").Value;
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = false;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(key)),
+            };
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    if (context.Request.Headers.ContainsKey("Authorization"))
+                    {
+                        var bearerstr = context.Request.Headers["Authorization"].FirstOrDefault(k => k.StartsWith("Bearer"));
+                        if (!string.IsNullOrEmpty(bearerstr))
+                        {
+                            var keyval = bearerstr.Split(" ");
+                            if (keyval != null && keyval.Length > 1)
+                            {
+                                context.Token = keyval[1];
+                            }
+                        }
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        }); 
         services.Configure<IdentityOptions>(options =>
         {
             // Default SignIn settings.
@@ -119,13 +164,20 @@ public static class DependencyInjection
 
                  });
 
-
-        services.ConfigureApplicationCookie(options =>
+        services.AddOpenApiDocument(configure =>
         {
-            options.LoginPath = "/Identity/Account/Login";
-            options.LogoutPath = "/Identity/Account/Logout";
-            options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            configure.Title = "FullOfLife API";
+            configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            {
+                Type = OpenApiSecuritySchemeType.ApiKey,
+                Name = "Authorization",
+                In = OpenApiSecurityApiKeyLocation.Header,
+                Description = "Type into the textbox: Bearer {your JWT token}."
+            });
+            configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
+
+
         return services;
     }
 

@@ -56,6 +56,8 @@ public static class ApplicationBuilderExtensions
             endpoints.MapRazorPages();
             endpoints.MapHub<SignalRHub>(SignalR.HubUrl);
         });
+        app.UseOpenApi(); // Serves the registered OpenAPI/Swagger documents by default on `/swagger/{documentName}/swagger.json`
+        app.UseSwaggerUi3();
 
 
 

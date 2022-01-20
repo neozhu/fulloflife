@@ -3,6 +3,8 @@
 
 using CleanArchitecture.Razor.Infrastructure.Configurations;
 using CleanArchitecture.Razor.Infrastructure.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +14,7 @@ namespace SmartAdmin.WebUI.EndPoints;
 
 [ApiController]
 [Route("api/roles")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class RolesEndpoint : ControllerBase
 {
     private readonly RoleManager<ApplicationRole> _manager;

@@ -4,6 +4,7 @@
 using CleanArchitecture.Razor.Infrastructure.Configurations;
 using CleanArchitecture.Razor.Infrastructure.Identity;
 using CleanArchitecture.Razor.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ namespace SmartAdmin.WebUI.EndPoints;
 
 [ApiController]
 [Route("api/users")]
+[Authorize]
 public class UsersEndpoint : ControllerBase
 {
     private readonly ApplicationDbContext _context;

@@ -122,12 +122,12 @@
                         </div>
                         <div class="col-md-4 mb-1">
                             <label class="form-label" asp-for="Input.Cost">@_localizer["Cost"]</label>
-                            <input type="number" asp-for="Input.Cost" class="form-control" placeholder="@_localizer["Price"]" autocomplete="off"/>
+                            <input type="number" min="0.0" step="0.1" asp-for="Input.Cost" class="form-control" placeholder="@_localizer["Price"]" autocomplete="off"/>
                             <span class="invalid-feedback" asp-validation-for="Input.Cost">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-4 mb-1">
                             <label class="form-label" asp-for="Input.Price">@_localizer["Price"]</label>
-                            <input type="number" asp-for="Input.Price" class="form-control" placeholder="@_localizer["Price"]" autocomplete="off"/>
+                            <input type="number" asp-for="Input.Price" min="0.0" step="0.1" class="form-control" placeholder="@_localizer["Price"]" autocomplete="off"/>
                             <span class="invalid-feedback" asp-validation-for="Input.Price">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-4 mb-1">
@@ -260,7 +260,7 @@
             event.preventDefault();
             event.stopPropagation();
             var formData = new FormData(form);
-            console.log(JSON.stringify(taglabels.getTags()),getproductoptions())
+ 
             formData.set("Input.Options",JSON.stringify(getproductoptions()));
             formData.set("Input.Labels",JSON.stringify(taglabels.getTags()))
             axios.post('@Url.Page("/Products/Index")',formData).then((response) => {
@@ -284,6 +284,7 @@
         uploadfileinput.click();
     })
     addoptionsbutton.addEventListener('click', (e) => {
+        $('#Input_IsSingle').attr("checked", false);
         $('#productoptions > tbody').append(`<tr>
                         <td><input type="text" name="group" class="form-control" placeholder="@_localizer["Product Group"]" required="" /></td>
                         <td><input type="text" name="productName" class="form-control" placeholder="@_localizer["Product Name"]" required="" /></td>
@@ -361,6 +362,12 @@
     var deleteoptions = (obj) => {
          var tr=obj.parentNode.parentNode;
          tr.parentNode.removeChild(tr);
+
+        if($('#productoptions > tbody > tr').length > 0){
+            $('#Input_IsSingle').attr("checked", false);
+        }else{
+            $('#Input_IsSingle').attr("checked", true);
+        }
     }
     var $dg={};
     var initdatagrid = () => {
@@ -430,7 +437,7 @@
                 },
                 { field: 'Name', title: '@_localizer["Name"]', sortable: true, width: 260,
                   formatter:function(v,row){
-                      return `<a href="#" class="fs-lg text-dark">v</a>
+                      return `<a href="#" class="fs-lg text-dark">${v}</a>
                                   <br>
                              <small class="text-muted">${row.Description}</small>
                             `
@@ -500,6 +507,8 @@
                     }
                 },
                 Labels:function(value){
+                    document.querySelector('.tagin').value='';
+                    document.querySelector('.tagin').dispatchEvent(new Event('change'))
                     if(value) {
                         taglabels.addTag(JSON.parse(value))
                     }else {
@@ -539,12 +548,13 @@
             uploadbutton.disabled = false;
             uploadfileinput.required = true;
             $('#product_form #Input_Id').val(0);
-            $('#Input_IsSingle').attr("checked", false);
+            $('#Input_IsSingle').attr("checked", true);
             $('#Input_IsEnable').attr("checked", false);
             $('#Input_IsNew').attr("checked", false);
-            taglabels.remove()
+            document.querySelector('.tagin').value='';
+            document.querySelector('.tagin').dispatchEvent(new Event('change'))
             setproductoptions([]);
-            productimages.innerHTML=`<div class="rounded width-20 height-15 d-inline-block bg-faded shadow-2 mr-2">
+            productimages.innerHTML = `<div class="rounded width-20 height-15 d-inline-block bg-faded shadow-2 mr-2">
                                         <img class="width-20 height-15" src="https://via.placeholder.com/600x450" alt="product catalog icon" />
                                     </div>
                                     <div class="rounded width-20 height-15 d-inline-block bg-faded shadow-2 mr-2">
