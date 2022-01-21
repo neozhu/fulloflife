@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Razor.Application.Common.Interfaces.Identity.DTOs;
+using CleanArchitecture.Razor.Application.Common.Interfaces.Identity.WeiChat;
 using CleanArchitecture.Razor.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -261,5 +262,21 @@ public class IdentityService : IIdentityService
         user.IsLive = true;
         await _userManager.UpdateAsync(user);
         return user.DisplayName;
+    }
+
+    public async Task<bool> RegisterFromWx(UserInfo wxUser)
+    {
+        var user = new ApplicationUser
+        {
+            EmailConfirmed = true,
+            IsActive = true,
+            Site = "WX",
+            DisplayName = wxUser.nickName,
+            UserName = wxUser.openpid,
+            Email = $"{wxUser.nickName}@{wxUser.openpid}.wx",
+            ProfilePictureDataUrl = $"{wxUser.avatarUrl}"
+        };
+        var result = await _userManager.CreateAsync(user, user.Email);
+        return result.Succeeded;
     }
 }

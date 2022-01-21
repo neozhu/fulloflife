@@ -165,11 +165,11 @@ public class Testing
 
         await context.SaveChangesAsync();
     }
-    public static Task<T> GetRequiredService<T>()
+    public static async Task<T> GetRequiredService<T>()
     {
-        using var scope = _scopeFactory.CreateScope();
+        var scope = _scopeFactory.CreateScope();
         var service = scope.ServiceProvider.GetRequiredService<T>();
-        return Task.FromResult(service);
+        return await Task.FromResult(service);
     }
 
     public static async Task<int> CountAsync<TEntity>() where TEntity : class

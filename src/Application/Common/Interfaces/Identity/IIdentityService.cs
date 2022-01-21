@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using CleanArchitecture.Razor.Application.Common.Interfaces.Identity.DTOs;
+using CleanArchitecture.Razor.Application.Common.Interfaces.Identity.WeiChat;
 
 namespace CleanArchitecture.Razor.Application.Common.Interfaces.Identity;
 
@@ -17,5 +18,5 @@ public interface IIdentityService : IService
     Task<IDictionary<string, string>> FetchUsers(string roleName);
     Task<string> UpdateLiveStatus(string userId, bool isLive);
 
-    Task<bool> RegisterUser(string nickName, string avatarUrl, int gender, string country, string province, string city, string language);
+    Task<bool> RegisterFromWx(UserInfo wxUser);
 }
