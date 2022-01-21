@@ -59,6 +59,7 @@ public class ExportProductsQueryHandler :
                 { _localizer["Is Enable"], item => item.IsEnable },
                 { _localizer["Is Single"], item => item.IsSingle },
                 { _localizer["Labels"], item => JsonSerializer.Serialize(item.Labels) },
+                { _localizer["Options"], item => JsonSerializer.Serialize(item.Options) },
                 { _localizer["Images"], item => JsonSerializer.Serialize(item.Images) },
                 { _localizer["Small Images"], item => JsonSerializer.Serialize(item.SmallImages) },
             }

@@ -2,22 +2,21 @@
 @using CleanArchitecture.Razor.Domain.Enums
 @using Microsoft.AspNetCore.Mvc.Localization
 @using CleanArchitecture.Razor.Application.Constants.Permission
-@model SmartAdmin.WebUI.Pages.Categories.IndexModel
+@model SmartAdmin.WebUI.Pages.Shops.IndexModel
 @inject Microsoft.Extensions.Localization.IStringLocalizer<IndexModel> _localizer
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService
 @{
-    ViewData["Title"] = _localizer["Product Catalog"].Value;
-    ViewData["PageName"] = "categories_index";
-    ViewData["Category1"] = _localizer["Production"].Value;
-    ViewData["Heading"] = _localizer["Categories"].Value;
-    ViewData["PageDescription"] = _localizer["Product Catalog"].Value;
+    ViewData["Title"] = _localizer["Shop"].Value;
+    ViewData["PageName"] = "shops_index";
+    ViewData["Category1"] = _localizer["CRM"].Value;
+    ViewData["Heading"] = _localizer["Shops"].Value;
+    ViewData["PageDescription"] = _localizer["Shop"].Value;
     ViewData["PreemptiveClass"] = "Default";
-    var _canCreate = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Create);
-    var _canEdit = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Edit);
-    var _canDelete = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Delete);
-    var _canSearch = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Search);
-    var _canExport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Export);
-    var _canImport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Import);
+    var _canCreate = await _authorizationService.AuthorizeAsync(User, null, Permissions.Shops.Create);
+    var _canEdit = await _authorizationService.AuthorizeAsync(User, null, Permissions.Shops.Edit);
+    var _canDelete = await _authorizationService.AuthorizeAsync(User, null, Permissions.Shops.Delete);
+    var _canSearch = await _authorizationService.AuthorizeAsync(User, null, Permissions.Shops.Search);
+    var _canExport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Shops.Export);
     
 }
 @section HeadBlock {
@@ -28,7 +27,7 @@
     <link rel="stylesheet" media="screen,print" href="~/lib/easyui/themes/insdep/easyui.css">
     <style>
 
-        .category_dg_datagrid-cell-c1-_action {
+        .shop_dg_datagrid-cell-c1-_action {
             overflow: visible !important
         }
     </style>
@@ -40,13 +39,6 @@
             <small></small>
         </h4>
         <div class="ml-auto">
-            @if (_canSearch.Succeeded)
-            {
-                <button class="btn btn-sm btn-outline-primary " id="refreshbutton">
-                    <span class="@(Settings.Theme.IconPrefix) fa-sync mr-1"></span>
-                    @_localizer["Refresh"]
-                </button>
-            }
             @if (_canCreate.Succeeded)
             {
                 <button class="btn btn-sm btn-outline-primary " id="addbutton">
@@ -61,15 +53,13 @@
                     @_localizer["Delete"]
                 </button>
             }
-           
-            @if (_canImport.Succeeded)
-			{
-                <button class="btn btn-sm btn-outline-primary " id="importbutton">
-                   <span class="@(Settings.Theme.IconPrefix) fa-upload mr-1"></span>
-                   @_localizer["Import Excel"]
+            @if (_canSearch.Succeeded)
+            {
+                <button class="btn btn-sm btn-outline-primary " id="refreshbutton">
+                    <span class="@(Settings.Theme.IconPrefix) fa-sync mr-1"></span>
+                    @_localizer["Refresh"]
                 </button>
-				 
-			}
+            }
             @if (_canExport.Succeeded)
             {
                 <button class="btn btn-sm btn-outline-primary " id="exportbutton">
@@ -82,13 +72,13 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-12">
-                <table id="category_dg">
+                <table id="shop_dg">
                 </table>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="category_modal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false">
+<div class="modal fade" id="shop_modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -97,45 +87,73 @@
                     <span aria-hidden="true"><i class="@(Settings.Theme.IconPrefix) fa-times"></i></span>
                 </button>
             </div>
-            <form id="category_form" class="needs-validation" novalidate="novalidate">
+            <form id="shop_form" class="needs-validation" novalidate="novalidate">
                 <div class="modal-body">
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Input.Id" />
                     <input type="hidden" asp-for="Input.Icon" />
                     <div class="form-row">
-                        <div class="col-md-6">
-                            <label class="form-label" for="Name">@_localizer["Name"] <span class="text-danger">*</span></label>
-                            <input type="text" asp-for="Input.Name" class="form-control" placeholder="@_localizer["Name"]" />
+                        <div class="col-md-12">
+                            <label class="form-label" asp-for="Input.Name">@_localizer["Name"] <span class="text-danger">*</span></label>
+                            <input type="text" asp-for="Input.Name" class="form-control" placeholder="@_localizer["Name"]" autocomplete="off" />
                             <span class="invalid-feedback" asp-validation-for="Input.Name">Sorry, you missed this one.</span>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label" for="Sequence">@_localizer["Index"]</label>
-                            <input type="number" asp-for="Input.Sequence" class="form-control" placeholder="@_localizer["Index"]" />
-                            <span class="invalid-feedback" asp-validation-for="Input.Sequence">Sorry, you missed this one.</span>
+                            <label class="form-label" asp-for="Input.ContactName">@_localizer["Contact Name"] </label>
+                            <input type="text" asp-for="Input.ContactName" class="form-control" placeholder="@_localizer["Contact Name"]" autocomplete="off" />
+                            <span class="invalid-feedback" asp-validation-for="Input.ContactName">Sorry, you missed this one.</span>
                         </div>
-                         <div class="col-md-12">
+                        <div class="col-md-6">
+                            <label class="form-label" asp-for="Input.ContactPhone">@_localizer["Contact Phone"] <span class="text-danger">*</span></label>
+                            <input type="text" asp-for="Input.ContactPhone" class="form-control" placeholder="@_localizer["Contact Phone"]" autocomplete="off" />
+                            <span class="invalid-feedback" asp-validation-for="Input.ContactPhone">Sorry, you missed this one.</span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" asp-for="Input.DeliveryDistance">@_localizer["Delivery Distance(KM)"]</label>
+                            <input type="number" asp-for="Input.DeliveryDistance" class="form-control" placeholder="@_localizer["Delivery Distance"]" autocomplete="off" />
+                            <span class="invalid-feedback" asp-validation-for="Input.DeliveryDistance">Sorry, you missed this one.</span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" asp-for="Input.MinCharge">@_localizer["Min Charge(yuan)"]</label>
+                            <input type="number" asp-for="Input.MinCharge" class="form-control" placeholder="@_localizer["Min Charge"]" autocomplete="off" />
+                            <span class="invalid-feedback" asp-validation-for="Input.MinCharge">Sorry, you missed this one.</span>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label" asp-for="Input.Address">@_localizer["Address"] <span class="text-danger">*</span></label>
+                            <input type="text" asp-for="Input.Address" class="form-control" placeholder="@_localizer["Address"]" autocomplete="off" />
+                            <span class="invalid-feedback" asp-validation-for="Input.Address">Sorry, you missed this one.</span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" asp-for="Input.Latitude">@_localizer["Latitude"]</label>
+                            <input type="text" asp-for="Input.Latitude" class="form-control" placeholder="@_localizer["Latitude"]" readonly="readonly" autocomplete="off" />
+                            <span class="invalid-feedback" asp-validation-for="Input.Latitude">Sorry, you missed this one.</span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" asp-for="Input.Longitude">@_localizer["Longitude"]</label>
+                            <input type="text" asp-for="Input.Longitude" class="form-control" placeholder="@_localizer["Longitude"]" readonly="readonly" autocomplete="off" />
+                            <span class="invalid-feedback" asp-validation-for="Input.Longitude">Sorry, you missed this one.</span>
+                        </div>
+                       
+                        <div class="col-md-12">
                             <label class="form-label" for=""></label>
-                            <input type="file" asp-for="IconUploadedFile" accept="image/png, image/gif, image/jpeg" style="display:none" required />
+                            <input type="file" asp-for="UploadedFile" accept="image/png, image/gif, image/jpeg" style="display:none" required />
                             <div class="">
-                                <button name="uploadiconbutton" type="button" class="btn btn-primary btn-icon waves-effect waves-themed mr-2">
+                                <button name="uploadbutton" type="button" class="btn btn-primary btn-icon waves-effect waves-themed mr-2">
                                     <i class="fal fa-paperclip"></i>
                                 </button>
-                                <span class="text-danger">*</span>
                                 <small class="m-0 fw-300">
                                         @_localizer["It is recommended that the size of the uploaded image be 68 × 68 pixels"]
                                 </small>
                                 <div class="flex-row mt-2 mb-2" >
                                      <div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
-                                         <img id="product_catalog_icon" src="https://via.placeholder.com/68" alt="product catalog icon" />
+                                         <img id="shop_icon" src="https://via.placeholder.com/68" alt="shop ico" />
                                      </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <label class="form-label" for="Description">@_localizer["Description"] </label>
-                            <input type="text" asp-for="Input.Description" class="form-control" placeholder="@_localizer["Description"]" />
-                            <span class="invalid-feedback" asp-validation-for="Input.Description">Sorry, you missed this one.</span>
-                        </div>
+               
+                        
+                        
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -148,20 +166,84 @@
 </div>
 @await Component.InvokeAsync("ImportExcel", new
 {
-    importUri = Url.Page("/Categories/Index") + "?handler=Import",
-    getTemplateUri = @Url.Page("/Categories/Index") + "?handler=CreateTemplate",
+    importUri = Url.Page("/Shops/Index") + "?handler=Import",
+    getTemplateUri = @Url.Page("/Shops/Index") + "?handler=CreateTemplate",
     onImportedSucceeded = "reloadData()"
 })
 @section ScriptsBlock {
     <partial name="_ValidationScriptsPartial" />
-
-    <script type="text/javascript" src="~/lib/easyui/jquery.easyui.min.js" asp-append-version="true"></script>
+    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=PP4BZ-5M6E4-KN3UG-X22DN-H2XXK-YNFWB&libraries=place"></script>
+    <script charset="utf-8" src="https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=PP4BZ-5M6E4-KN3UG-X22DN-H2XXK-YNFWB"></script>
+   <script type="text/javascript" src="~/lib/easyui/jquery.easyui.min.js" asp-append-version="true"></script>
     <script type="text/javascript" src="~/lib/easyui/plugins/datagrid-filter.js" asp-append-version="true"></script>
     <script type="text/javascript" src="~/lib/easyui/jquery.easyui.component.js" asp-append-version="true"></script>
 
     <script>jQuery.fn.tooltip = bootstrapTooltip;</script>
     <script src="~/lib/jquery-form/jquery.jsonToForm.js"></script>
+    <script>
+       function initautocomplete() {
+            var ap = new qq.maps.place.Autocomplete(document.getElementById('Input_Address'), {
+                offset: new qq.maps.Size(0, 5),
+                location: '江苏省',
+                zIndex: 99999
+                
+            });
+            var listener = qq.maps.event.addListener(
+               ap,
+              'confirm',
+              function(res) {
+                var geocoder = new TMap.service.Geocoder();
+                var address ="江苏省苏州市" +  document.getElementById('Input_Address').value ;
+                geocoder.getLocation({ address:address})
+                        .then((result) => {
+                            if(result.status!=0) {
+                                document.getElementById('Input_Address').value = '';
+                                alert(result.message);
+                            } else {
+                               $('#Input_Longitude').val(result.result.location.lng);
+                               $('#Input_Latitude').val(result.result.location.lat);
+                            }
+                         })
+                        .catch(response => {
+                             document.getElementById('Input_Address').value = '';
+                             alert(response.message);
+                         });
+              }
+            );
+      
+       }
+       
 
+       var searchService = new qq.maps.SearchService({
+        complete : function(results){
+            if(results.type === "CITY_LIST") {
+                return;
+            }
+            var pois = results.detail.pois;
+            var latlngBounds = new qq.maps.LatLngBounds();
+            for(var i = 0,l = pois.length;i < l; i++){
+                var poi = pois[i];
+                latlngBounds.extend(poi.latLng);  
+                var marker = new qq.maps.Marker({
+                    map:map,
+                    position: poi.latLng
+                });
+ 
+                marker.setTitle(poi.name);
+            }
+            map.fitBounds(latlngBounds);
+        }
+    });
+
+       $('#shop_modal').on('shown.bs.modal',function() {
+           initautocomplete()
+       })
+      
+
+   
+
+
+    </script>
     <script type="text/javascript">
 
         $('#refreshbutton').click(function () {
@@ -176,28 +258,25 @@
         $('#exportbutton').click(function () {
             onExport();
         });
-        $('#importbutton').click(function () {
-		   showImportModal();
-	    });
-        $('#category_form :submit').click(function (e) {
-            var form = document.querySelector('#category_form');
+        $('#shop_form :submit').click(function (e) {
+            var form = document.querySelector('#shop_form');
             if ($(form).valid() === false) {
                 form.classList.add('was-validated');
             } else {
                 event.preventDefault();
                 event.stopPropagation();
-                var request = $('#category_form').serialize();
+                var request = $('#shop_form').serialize();
                 var formData = new FormData(form);
-                formData.append("UploadedFile", uploadiconfileinput.files[0]);
+                formData.append("UploadedFile", uploadfileinput.files[0]);
                 axios({
-                    url: '@Url.Page("/Categories/Index")',
+                    url: '@Url.Page("/Shops/Index")',
                     method: 'post',
                     data: formData,
                     processData: false,// 告诉axios不要去处理发送的数据(重要参数)
                     contentType: false,   // 告诉axios不要去设置Content-Type请求头
                 }).then((response) => {
                         toastr["info"]('@_localizer["Save successfully"]');
-                        $('#category_modal').modal('toggle');
+                        $('#shop_modal').modal('toggle');
                         reloadData();
                 })
 
@@ -206,20 +285,20 @@
             event.stopPropagation();
         })
 
-        var uploadiconbutton = document.querySelector("button[name='uploadiconbutton']");
-        var productcatalogicon = document.querySelector("#product_catalog_icon");
-        var uploadiconfileinput = document.getElementById("IconUploadedFile");
+        var uploadbutton = document.querySelector("button[name='uploadbutton']");
+        var productcatalogicon = document.querySelector("#shop_icon");
+        var uploadfileinput = document.getElementById("UploadedFile");
         var savebutton = document.querySelector("button[name='savebutton']");
-        uploadiconbutton.addEventListener('click', (e) => {
-            uploadiconfileinput.click();
+        uploadbutton.addEventListener('click', (e) => {
+            uploadfileinput.click();
         })
-        uploadiconfileinput.onchange = () => {
-            const filename = uploadiconfileinput.value.split('\\').pop();
-            const form = document.querySelector('#category_form');
+        uploadfileinput.onchange = () => {
+            const filename = uploadfileinput.value.split('\\').pop();
+            const form = document.querySelector('#shop_form');
             const formData = new FormData(form);
-            formData.append("UploadedFile", uploadiconfileinput.files[0]);
+            formData.append("UploadedFile", uploadfileinput.files[0]);
             axios({
-                    url: '@Url.Page("/Categories/Index")?handler=Qiniu',
+                    url: '@Url.Page("/Shops/Index")?handler=Qiniu',
                     method: 'post',
                     data: formData,
                     processData: false,// 告诉axios不要去处理发送的数据(重要参数)
@@ -236,7 +315,7 @@
         };
         var $dg={};
         var initdatagrid = () => {
-            $dg = $('#category_dg').datagrid({
+            $dg = $('#shop_dg').datagrid({
                 height: 700,
                 method: 'GET',
                 rownumbers: false,
@@ -246,8 +325,8 @@
                 pagination: true,
                 clientPaging: false,
                 remoteFilter: true,
-                sortName: 'Sequence',
-                sortOrder:'asc',
+                sortName: 'Id',
+                sortOrder:'desc',
                 pageSize: 15,
                 pageList: [10, 15, 30, 50, 100, 1000],
                 onBeforeLoad: function () {
@@ -286,49 +365,68 @@
                                   </div>`;
                         }
                     },
-                    { field: 'Name', title: '@_localizer["Name"]', sortable: true, width: 260,
-                      formatter:function(value,row) {
+                    { field: 'Name',
+                      title: '@_localizer["Name"]',
+                      sortable: true,
+                      width: 300,
+                      formatter:function(value,row){
                           return `<a href="#" class="fs-lg text-dark">${value}</a>
                                   <br>
-                                 <small class="text-muted">${row.Description}</small>
+                                 <small class="text-muted">${row.Address}</small>
                                  `
                       }
                     },
-                   
-                    { field: 'Sequence', title: '@_localizer["Sort"]', sortable: true, width: 140 },
+                    { field: 'ContactName',
+                      title: '@_localizer["Contact Name"]',
+                      sortable: true,
+                      width: 200,
+                      formatter:function(value,row){
+                          return `<a href="#" class="fs-lg text-dark">${value}</a>
+                                  <br>
+                                 <small class="text-muted">${row.ContactPhone}</small>
+                                 `
+                      }
+                    },
+                    { field: 'DeliveryDistance', title: '@_localizer["Delivery Distance"]', sortable: true, width: 160 },
+                    { field: 'MinCharge', title: '@_localizer["Min Charge"]', sortable: true, width: 160 },
                     { field: 'Icon', title: '@_localizer["Icon"]', sortable: true, width: 100,
                       align: 'center',
                       formatter:function(value) {
-                         return `<div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
-                                         <img id="product_catalog_icon" src="${value}" alt="product catalog icon" />
+                         if(value){
+                             return `<div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
+                                         <img id="shop_icon" src="${value}" alt="product catalog icon" />
                                  </div>`
+                         }
+                         
                       }
                     },
+                   
                 ]]
             })
                 .datagrid('enableFilter', {})
-                .datagrid('load', '@Url.Page("/Categories/Index")?handler=Data');
+                .datagrid('load', '@Url.Page("/Shops/Index")?handler=Data');
 
         }
 
         var reloadData = () => {
-            $dg.datagrid('load', '@Url.Page("/Categories/Index")?handler=Data');
+            $dg.datagrid('load', '@Url.Page("/Shops/Index")?handler=Data');
         }
 
         $(() => {
             initdatagrid();
         })
-        var popupmodal = (category) => {
-            $('#category_modal').modal('toggle');
-            $('#category_modal .modal-title').html('@_localizer["Add Product Catalog"]');
-            $('#category_form').clearForm();
-            $('#category_form')[0].reset();
-            if (category) {
-                $('#category_modal .modal-title').html('@_localizer["Add Product Catalog"]');
-                productcatalogicon.src = category.Icon;
-                $('#category_form').jsonToForm(category, {
+        var popupmodal = (shop) => {
+            $('#shop_modal').modal('toggle');
+            $('#shop_modal .modal-title').html('@_localizer["Add Shop"]');
+            $('#shop_form').clearForm();
+            $('#shop_form')[0].reset();
+            if (shop) {
+
+                $('#shop_modal .modal-title').html('@_localizer["Add Shop"]');
+                productcatalogicon.src = shop.Icon;
+                $('#shop_form').jsonToForm(shop, {
                     Icon:function(v) {
-                        $('#category_form #Input_Icon').val(v);
+                         $('#shop_form #Input_Icon').val(v);
                         if(v){
                             productcatalogicon.src = v;
                         }else{
@@ -337,15 +435,16 @@
                     }
                 })
             } else {
-                $('#category_form #Input_Id').val(0);
-                $('#category_form #Input_Icon').val(0);
+ 
+                $('#shop_form #Input_Id').val(0);
+                $('#shop_form #Input_Icon').val('');
                 productcatalogicon.src = "https://via.placeholder.com/68";
             }
         }
 
         var onEdit = (index) => {
-            var category = $dg.datagrid('getRows')[index];
-            popupmodal(category);
+            var shop = $dg.datagrid('getRows')[index];
+            popupmodal(shop);
         }
         var onDelete = (id) => {
             bootbox.confirm({
@@ -362,7 +461,7 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        axios.get('@Url.Page("/Categories/Index")?handler=Delete&id=' + id).then(res => {
+                        axios.get('@Url.Page("/Shops/Index")?handler=Delete&id=' + id).then(res => {
                             toastr["info"]('@_localizer["Delete successfully"]');
                             reloadData();
                         })
@@ -388,7 +487,7 @@
                     },
                     callback: function (result) {
                         if (result) {
-                            axios.post('@Url.Page("/Categories/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
+                            axios.post('@Url.Page("/Shops/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
                                 toastr["info"](`@_localizer["Delete ${checkedId.length} successfully"]`);
                                 reloadData();
                             })
@@ -407,25 +506,35 @@
                 order: options.sortOrder,
             }
 
-            axios.post('@Url.Page("/Categories/Index")?handler=Export',
+            axios.post('@Url.Page("/Shops/Index")?handler=Export',
                 data,
                 {
                     responseType: "blob"
                 })
                 .then(response => {
                     const filename = getFileName(response.headers['content-disposition']);
-                    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officecategory.spreadsheetml.sheet;charset=utf-8' }));
-                    const link = document.createElement('a');
+                    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officeshop.spreadsheetml.sheet;charset=utf-8' }));
+                    const link = shop.createElement('a');
                     link.href = url;
                     link.setAttribute('download', filename);
-                    document.body.appendChild(link);
+                    shop.body.appendChild(link);
                     link.click();
                     toastr["info"](`@_localizer["Export successfully"]`);
                 })
 
 
         }
-       
+        var onDownload = (index) => {
+            const item = $dg.datagrid('getRows')[index];
+            const url = item.URL;
+            const filename = getFileName(item.URL);
+            const link = shop.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename);
+            shop.body.appendChild(link);
+            link.click();
+            toastr["info"](`@_localizer["Download successfully"]`);
+        }
 
 
 

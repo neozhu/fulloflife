@@ -74,7 +74,7 @@ public class DeleteProductCommandHandler :
 
     public async Task<Result> Handle(DeleteCheckedProductsCommand request, CancellationToken cancellationToken)
     {
-        //TODO:Implementing DeleteCheckedProductsCommandHandler method 
+
         var items = await _context.Products.Where(x => request.Id.Contains(x.Id)).ToListAsync(cancellationToken);
         foreach (var item in items)
         {

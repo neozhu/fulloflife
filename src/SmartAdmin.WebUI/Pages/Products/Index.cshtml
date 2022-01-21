@@ -17,6 +17,7 @@
     var _canDelete = await _authorizationService.AuthorizeAsync(User, null, Permissions.Products.Delete);
     var _canSearch = await _authorizationService.AuthorizeAsync(User, null, Permissions.Products.Search);
     var _canExport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Products.Export);
+    var _canImport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Products.Import);
 
 }
 @section HeadBlock {
@@ -38,6 +39,13 @@
             <small></small>
         </h4>
         <div class="ml-auto">
+            @if (_canSearch.Succeeded)
+            {
+                <button class="btn btn-sm btn-outline-primary " id="refreshbutton">
+                    <span class="@(Settings.Theme.IconPrefix) fa-sync mr-1"></span>
+                    @_localizer["Refresh"]
+                </button>
+            }
             @if (_canCreate.Succeeded)
             {
                 <button class="btn btn-sm btn-outline-primary " id="addbutton">
@@ -52,13 +60,14 @@
                     @_localizer["Delete"]
                 </button>
             }
-            @if (_canSearch.Succeeded)
-            {
-                <button class="btn btn-sm btn-outline-primary " id="refreshbutton">
-                    <span class="@(Settings.Theme.IconPrefix) fa-sync mr-1"></span>
-                    @_localizer["Refresh"]
+            @*@if (_canImport.Succeeded)
+			{
+                <button class="btn btn-sm btn-outline-primary " id="importbutton">
+                   <span class="@(Settings.Theme.IconPrefix) fa-upload mr-1"></span>
+                   @_localizer["Import Excel"]
                 </button>
-            }
+				 
+			}*@
             @if (_canExport.Succeeded)
             {
                 <button class="btn btn-sm btn-outline-primary " id="exportbutton">
@@ -179,9 +188,9 @@
                         </div>
                         <div class="col-md-12 mb-1">
                             <label class="form-label" for=""></label>
-                            <input type="file" asp-for="UploadedFile" multiple="" accept="image/png, image/gif, image/jpeg" style="display:none" required />
+                            <input type="file" asp-for="ImagesUploadedFile" multiple="" accept="image/png, image/gif, image/jpeg" style="display:none" required />
                             <div>
-                                <button name="uploadbutton" type="button" class="btn btn-primary btn-icon waves-effect waves-themed mr-2">
+                                <button name="imagesuploadbutton" type="button" class="btn btn-primary btn-icon waves-effect waves-themed mr-2">
                                     <i class="fal fa-camera"></i>
                                 </button>
                                 <span class="text-danger">*</span>
@@ -252,6 +261,9 @@
     $('#exportbutton').click(function () {
         onExport();
     });
+    $('#importbutton').click(function () {
+		   showImportModal();
+	    });
     $('#product_form :submit').click(function (e) {
         var form = document.querySelector('#product_form');
         if ($(form).valid() === false) {
@@ -275,13 +287,13 @@
         event.stopPropagation();
     })
 
-    var uploadbutton = document.querySelector("button[name='uploadbutton']");
+    var imagesuploadbutton = document.querySelector("button[name='imagesuploadbutton']");
     var productimages = document.querySelector("#productimages");
-    var uploadfileinput = document.getElementById("UploadedFile");
+    var uploadimagesfileinput = document.getElementById("ImagesUploadedFile");
     var savebutton = document.querySelector("button[name='savebutton']");
     var addoptionsbutton = document.querySelector("button[name='addoptionsbutton']");
-    uploadbutton.addEventListener('click', (e) => {
-        uploadfileinput.click();
+    imagesuploadbutton.addEventListener('click', (e) => {
+        uploadimagesfileinput.click();
     })
     addoptionsbutton.addEventListener('click', (e) => {
         $('#Input_IsSingle').attr("checked", false);
@@ -294,13 +306,13 @@
                                </a></td>
            </tr>`) 
     })
-    uploadfileinput.onchange = () => {
-        const filename = uploadfileinput.value.split('\\').pop();
+    uploadimagesfileinput.onchange = () => {
+        const filename = uploadimagesfileinput.value.split('\\').pop();
         const form = document.querySelector('#product_form');
         const formData = new FormData(form);
-        const length = uploadfileinput.files.length;
+        const length = uploadimagesfileinput.files.length;
         for(let i=0;i<length;i++){
-             formData.append("UploadedFile[]", uploadfileinput.files[i]);
+             formData.append("ImagesUploadedFile[]", uploadimagesfileinput.files[i]);
         }
 
         axios({
@@ -496,8 +508,8 @@
         $('#product_form').clearForm();
         $('#product_form')[0].reset();
         if (product) {
-            //uploadbutton.disabled = true;
-            uploadfileinput.required = false;
+            //imagesuploadbutton.disabled = true;
+            uploadimagesfileinput.required = false;
             $('#product_modal .modal-title').html('@_localizer["Add Product"]');
             $('#product_form').jsonToForm(product, {
                 Options:function(value){
@@ -545,8 +557,8 @@
                 }
             })
         } else {
-            uploadbutton.disabled = false;
-            uploadfileinput.required = true;
+            imagesuploadbutton.disabled = false;
+            uploadimagesfileinput.required = true;
             $('#product_form #Input_Id').val(0);
             $('#Input_IsSingle').attr("checked", true);
             $('#Input_IsEnable').attr("checked", false);
@@ -638,24 +650,14 @@
             .then(response => {
                 const filename = getFileName(response.headers['content-disposition']);
                 const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officeproduct.spreadsheetml.sheet;charset=utf-8' }));
-                const link = product.createElement('a');
+                const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', filename);
-                product.body.appendChild(link);
+                document.body.appendChild(link);
                 link.click();
                 toastr["info"](`@_localizer["Export successfully"]`);
             })
     }
-    var onDownload = (index) => {
-        const item = $dg.datagrid('getRows')[index];
-        const url = item.URL;
-        const filename = getFileName(item.URL);
-        const link = product.createElement('a');
-        link.href = url;
-        link.setAttribute('download', filename);
-        product.body.appendChild(link);
-        link.click();
-        toastr["info"](`@_localizer["Download successfully"]`);
-    }
+ 
 </script>
 }

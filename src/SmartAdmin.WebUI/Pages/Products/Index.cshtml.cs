@@ -17,6 +17,7 @@ using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Png;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CleanArchitecture.Razor.Application.Features.Categories.Queries.GetAll;
+using CleanArchitecture.Razor.Application.Features.Products.Commands.Import;
 
 namespace SmartAdmin.WebUI.Pages.Products;
 
@@ -26,8 +27,9 @@ public class IndexModel : PageModel
     [BindProperty]
     public AddEditProductCommand Input { get; set; }
     [BindProperty]
-    public IFormFile[] UploadedFile { get; set; }
-
+    public IFormFile UploadedFile { get; set; }
+    [BindProperty]
+    public IFormFile[] ImagesUploadedFile { get; set; }
 
     private readonly ISender _mediator;
     private readonly IStringLocalizer<IndexModel> _localizer;
@@ -65,7 +67,7 @@ public class IndexModel : PageModel
     {
         var result1 = new List<string>();
         var result2 = new List<string>();
-        foreach (var uploadfile in UploadedFile)
+        foreach (var uploadfile in ImagesUploadedFile)
         {
             var filename = uploadfile.FileName;
             using (var largStream = new MemoryStream())
@@ -126,8 +128,19 @@ public class IndexModel : PageModel
     public async Task<FileResult> OnPostExportAsync([FromBody] ExportProductsQuery command)
     {
         var result = await _mediator.Send(command);
-        return File(result, "application/vnd.openxmlformats-officeCategory.spreadsheetml.sheet", _localizer["Categorys"] + ".xlsx");
+        return File(result, "application/vnd.openxmlformats-officeCategory.spreadsheetml.sheet", _localizer["Products"] + ".xlsx");
     }
-
+    public async Task<IActionResult> OnPostImportAsync()
+    {
+        var stream = new MemoryStream();
+        await UploadedFile.CopyToAsync(stream);
+        var command = new ImportProductsCommand()
+        {
+            FileName= UploadedFile.FileName,
+            Data=stream.ToArray()
+        };
+        var result = await _mediator.Send(command);
+        return new JsonResult(result);
+    }
 
 }

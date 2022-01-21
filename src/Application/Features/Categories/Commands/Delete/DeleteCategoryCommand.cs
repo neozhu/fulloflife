@@ -46,7 +46,7 @@ public class DeleteCategoryCommandHandler :
         var item = await _context.Categories.FindAsync(new object[] { request.Id }, cancellationToken);
         var uri = new Uri(item.Icon);
         var key = Path.GetFileName(uri.LocalPath);
-        var result = await _qiniuService.Delete(key);
+        await _qiniuService.Delete(key);
         _context.Categories.Remove(item);
         await _context.SaveChangesAsync(cancellationToken);
         return Result.Success();

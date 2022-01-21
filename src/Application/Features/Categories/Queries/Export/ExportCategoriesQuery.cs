@@ -36,7 +36,7 @@ public class ExportCategoriesQueryHandler :
 
     public async Task<byte[]> Handle(ExportCategoriesQuery request, CancellationToken cancellationToken)
     {
-  
+
         var filters = PredicateBuilder.FromFilter<Category>(request.FilterRules);
         var data = await _context.Categories.Where(filters)
                    .OrderBy($"{request.Sort} {request.Order}")
@@ -45,8 +45,11 @@ public class ExportCategoriesQueryHandler :
         var result = await _excelService.ExportAsync(data,
             new Dictionary<string, Func<CategoryDto, object>>()
             {
-                    //{ _localizer["Id"], item => item.Id },
-                }
+                 { _localizer["Name"], item => item.Name },
+                 { _localizer["Description"], item => item.Description },
+                 { _localizer["Sort"], item => item.Sequence },
+                 { _localizer["Icon"], item => item.Icon },
+            }
             , _localizer["Categories"]);
         return result;
     }

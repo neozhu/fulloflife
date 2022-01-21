@@ -55,15 +55,31 @@ public class ImportProductsCommandHandler :
             { _localizer["Is Single"], (row,item) => item.IsSingle =Convert.ToBoolean(row[_localizer["Is Single"]]?.ToString()) },
             { _localizer["Labels"], (row,item) => item.Labels =row[_localizer["Labels"]]?.ToString() },
             { _localizer["Price"], (row,item) => item.Price =Convert.ToDecimal(row[_localizer["Price"]]?.ToString()) },
-            { _localizer["Cost"], (row,item) => item.Cost =Convert.ToDecimal(row[_localizer["Name"]]?.ToString()) },
-            { _localizer["StockQty"], (row,item) => item.StockQty =Convert.ToInt32(row[_localizer["Name"]]?.ToString()) },
-            { _localizer["SalesQty"], (row,item) => item.SalesQty =Convert.ToInt32(row[_localizer["Name"]]?.ToString()) },
+            { _localizer["Cost"], (row,item) => item.Cost =Convert.ToDecimal(row[_localizer["Cost"]]?.ToString()) },
+            { _localizer["Stock Qty"], (row,item) => item.StockQty =Convert.ToInt32(row[_localizer["Stock Qty"]]?.ToString()) },
+            { _localizer["Sales Qty"], (row,item) => item.SalesQty =Convert.ToInt32(row[_localizer["Sales Qty"]]?.ToString()) },
             { _localizer["Images"], (row,item) => item.Images =row[_localizer["Images"]]?.ToString() },
             { _localizer["Small Images"], (row,item) => item.SmallImages =row[_localizer["Small Images"]]?.ToString() },
             { _localizer["Options"], (row,item) => item.Options = row[_localizer["Options"]]?.ToString() },
 
-        }, _localizer[nameof(Product)]);
-        return Result.Success();
+        }, _localizer["Products"]);
+
+        if (result.Succeeded)
+        {
+            foreach(var dto in result.Data)
+            {
+                var item = _mapper.Map<Product>(dto);
+                await _context.Products.AddAsync(item, cancellationToken);
+            }
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result.Success();
+        }
+        else
+        {
+            return Result.Failure(result.Errors);
+        }
+
+       
     }
     public async Task<byte[]> Handle(CreateProductsTemplateCommand request, CancellationToken cancellationToken)
     {
@@ -86,7 +102,7 @@ public class ImportProductsCommandHandler :
                   _localizer["Images"],
                   _localizer["Small Images"],
                 };
-        var result = await _excelService.CreateTemplateAsync(fields, _localizer[nameof(Product)]);
+        var result = await _excelService.CreateTemplateAsync(fields, _localizer["Products"]);
         return result;
     }
 }

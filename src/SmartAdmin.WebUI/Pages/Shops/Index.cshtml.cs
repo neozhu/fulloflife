@@ -1,35 +1,31 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using CleanArchitecture.Razor.Application.Features.Categories.Commands.AddEdit;
-using CleanArchitecture.Razor.Application.Features.Categories.Commands.Delete;
-using CleanArchitecture.Razor.Application.Features.Categories.Queries.Export;
-using CleanArchitecture.Razor.Application.Features.Categories.Queries.Pagination;
+using CleanArchitecture.Razor.Application.Features.Shops.Commands.AddEdit;
+using CleanArchitecture.Razor.Application.Features.Shops.Commands.Delete;
+using CleanArchitecture.Razor.Application.Features.Shops.Queries.Export;
+using CleanArchitecture.Razor.Application.Features.Shops.Queries.Pagination;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Authorization;
 using CleanArchitecture.Razor.Application.Constants.Permission;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using CleanArchitecture.Razor.Application.Common.Models;
 using CleanArchitecture.Razor.Application.Common.Interfaces;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Png;
-using CleanArchitecture.Razor.Application.Features.Categories.Commands.Import;
 
-namespace SmartAdmin.WebUI.Pages.Categories;
+namespace SmartAdmin.WebUI.Pages.Shops;
 
-[Authorize(policy: Permissions.Categories.View)]
+[Authorize(policy: Permissions.Shops.View)]
 public class IndexModel : PageModel
 {
     [BindProperty]
-    public AddEditCategoryCommand Input { get; set; }
+    public AddEditShopCommand Input { get; set; }
     [BindProperty]
     public IFormFile UploadedFile { get; set; }
-    public IFormFile IconUploadedFile { get; set; }
+
 
     private readonly ISender _mediator;
     private readonly IStringLocalizer<IndexModel> _localizer;
@@ -50,7 +46,7 @@ public class IndexModel : PageModel
 
         return Task.CompletedTask;
     }
-    public async Task<IActionResult> OnGetDataAsync([FromQuery] CategoriesWithPaginationQuery command)
+    public async Task<IActionResult> OnGetDataAsync([FromQuery] ShopsWithPaginationQuery command)
     {
         var result = await _mediator.Send(command);
         return new JsonResult(result);
@@ -63,7 +59,7 @@ public class IndexModel : PageModel
     }
     public async Task<IActionResult> OnPostQiniu()
     {
-        var filename = IconUploadedFile.FileName;
+        var filename = UploadedFile.FileName;
         using (var smallStream = new MemoryStream())
         using (var stream = new MemoryStream())
         {
@@ -84,34 +80,26 @@ public class IndexModel : PageModel
                     });
             }
             var data = smallStream.ToArray();
-            var result = await _qiniuService.Upload(data, $"product_catalog_{DateTime.UtcNow.Ticks}_{filename}");
+            var result = await _qiniuService.Upload(data, $"shop_icon_{DateTime.UtcNow.Ticks}_{filename}");
             return new JsonResult(result);
         }
     }
 
-    public async Task<IActionResult> OnPostDeleteCheckedAsync([FromBody] DeleteCheckedCategoriesCommand command)
+    public async Task<IActionResult> OnPostDeleteCheckedAsync([FromBody] DeleteCheckedShopsCommand command)
     {
 
         var result = await _mediator.Send(command);
         return new JsonResult(result);
     }
-    public async Task<IActionResult> OnGetDeleteAsync([FromQuery] DeleteCategoryCommand command)
+    public async Task<IActionResult> OnGetDeleteAsync([FromQuery] DeleteShopCommand command)
     {
         var result = await _mediator.Send(command);
         return new JsonResult(result);
     }
-    public async Task<FileResult> OnPostExportAsync([FromBody] ExportCategoriesQuery command)
+    public async Task<FileResult> OnPostExportAsync([FromBody] ExportShopsQuery command)
     {
         var result = await _mediator.Send(command);
-        return File(result, "application/vnd.openxmlformats-officeCategory.spreadsheetml.sheet", _localizer["Categorys"] + ".xlsx");
-    }
-    public async Task<IActionResult> OnPostImportAsync()
-    {
-        var stream = new MemoryStream();
-        await UploadedFile.CopyToAsync(stream);
-        var command = new ImportCategoriesCommand(UploadedFile.FileName, stream.ToArray());
-        var result = await _mediator.Send(command);
-        return new JsonResult(result);
+        return File(result, "application/vnd.openxmlformats-officeShop.spreadsheetml.sheet", _localizer["Shops"] + ".xlsx");
     }
 
 

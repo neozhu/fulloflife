@@ -24,7 +24,7 @@ public class ProductDto : IMapFrom<Product>
                 .ForMember(x => x.Labels, y => y.MapFrom(z => JsonSerializer.Deserialize<string[]?>(z.Labels, (JsonSerializerOptions)null)))
                 .ForMember(x => x.Images, y => y.MapFrom(z => JsonSerializer.Deserialize<string[]?>(z.Images, (JsonSerializerOptions)null)))
                 .ForMember(x => x.SmallImages, y => y.MapFrom(z => JsonSerializer.Deserialize<string[]?>(z.SmallImages, (JsonSerializerOptions)null)))
-                .ForMember(x => x.Options, y => y.MapFrom(z => JsonSerializer.Deserialize<Dictionary<string,IList<SKU>>>(z.Options, (JsonSerializerOptions)null)))
+                .ForMember(x => x.Options, y => y.MapFrom(z =>string.IsNullOrEmpty(z.Options)?null:JsonSerializer.Deserialize<Dictionary<string,IList<SKU>>?>(z.Options, (JsonSerializerOptions)null)))
                 ;
 
     }

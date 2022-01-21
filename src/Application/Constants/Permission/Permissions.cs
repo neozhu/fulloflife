@@ -51,6 +51,19 @@ public static class Permissions
         public const string Import = "Permissions.Customers.Import";
     }
 
+    [DisplayName("Shops")]
+    [Description("Shops Permissions")]
+    public static class Shops
+    {
+        public const string View = "Permissions.Shops.View";
+        public const string Create = "Permissions.Shops.Create";
+        public const string Edit = "Permissions.Shops.Edit";
+        public const string Delete = "Permissions.Shops.Delete";
+        public const string Search = "Permissions.Shops.Search";
+        public const string Export = "Permissions.Shops.Export";
+        public const string Import = "Permissions.Shops.Import";
+    }
+
     [DisplayName("Categories")]
     [Description("Categories Permissions")]
     public static class Categories

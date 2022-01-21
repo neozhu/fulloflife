@@ -59,21 +59,34 @@ public class ImportCategoriesCommandHandler :
             { _localizer["Name"], (row,item) => item.Name = row[_localizer["Name"]]?.ToString() },
             { _localizer["Description"], (row,item) => item.Description = row[_localizer["Description"]]?.ToString() },
             { _localizer["Icon"], (row,item) => item.Icon = row[_localizer["Icon"]]?.ToString() },
-            { _localizer["Sequence"], (row,item) => item.Sequence =Convert.ToInt32(row[_localizer["Sequence"]]?.ToString()) },
+            { _localizer["Sort"], (row,item) => item.Sequence =Convert.ToInt32(row[_localizer["Sort"]]?.ToString()) },
 
-        }, _localizer[nameof(Category)]);
-        throw new System.NotImplementedException();
+        }, _localizer["Categories"]);
+        if (result.Succeeded)
+        {
+            foreach(var dto in result.Data)
+            {
+                var item = _mapper.Map<Category>(dto);
+                await _context.Categories.AddAsync(item, cancellationToken);
+            }
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result.Success();
+        }
+        else
+        {
+            return Result.Failure(result.Errors);
+        }
     }
     public async Task<byte[]> Handle(CreateCategoriesTemplateCommand request, CancellationToken cancellationToken)
     {
 
         var fields = new string[] {
-                     _localizer["Sequence"],
                      _localizer["Name"],
                      _localizer["Description"],
+                     _localizer["Sort"],
                      _localizer["Icon"]
                 };
-        var result = await _excelService.CreateTemplateAsync(fields, _localizer[nameof(Category)]);
+        var result = await _excelService.CreateTemplateAsync(fields, _localizer["Categories"]);
         return result;
     }
 }

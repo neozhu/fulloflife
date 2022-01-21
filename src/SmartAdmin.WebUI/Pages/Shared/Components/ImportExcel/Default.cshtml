@@ -19,7 +19,7 @@
                     @_localizer["Upload"]
                 </button>
                 @Html.AntiForgeryToken()
-                <input asp-for="UploadedFile" class="form-control" style="display:none">
+                <input asp-for="UploadedFile" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="form-control" style="display:none">
                 <div class="uploadfilealert">
                     <div class="alert alert-secondary alert-dismissible fadedown show mb-0" role="alert">
                         @_localizer["Please upload excel file!"]

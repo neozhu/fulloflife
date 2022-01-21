@@ -54,7 +54,7 @@ public static class DependencyInjection
         services.Configure<AppConfigurationSettings>(configuration.GetSection("AppConfigurationSettings"));
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
         services.Configure<QiniuSettings>(configuration.GetSection("QiniuSettings"));
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IDomainEventService, DomainEventService>();
 
