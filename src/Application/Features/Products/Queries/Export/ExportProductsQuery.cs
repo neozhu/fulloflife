@@ -37,6 +37,11 @@ public class ExportProductsQueryHandler :
 
     public async Task<byte[]> Handle(ExportProductsQuery request, CancellationToken cancellationToken)
     {
+        var serializeOptions = new JsonSerializerOptions
+        {
+            WriteIndented = false,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
         var filters = PredicateBuilder.FromFilter<Product>(request.FilterRules);
         var data = await _context.Products.Where(filters)
                    .OrderBy($"{request.Sort} {request.Order}")
@@ -58,10 +63,10 @@ public class ExportProductsQueryHandler :
                 { _localizer["Is New"], item => item.IsNew },
                 { _localizer["Is Enable"], item => item.IsEnable },
                 { _localizer["Is Single"], item => item.IsSingle },
-                { _localizer["Labels"], item => JsonSerializer.Serialize(item.Labels) },
-                { _localizer["Options"], item => JsonSerializer.Serialize(item.Options) },
-                { _localizer["Images"], item => JsonSerializer.Serialize(item.Images) },
-                { _localizer["Small Images"], item => JsonSerializer.Serialize(item.SmallImages) },
+                { _localizer["Labels"], item => item.Labels },
+                { _localizer["Options"], item =>item.Options },
+                { _localizer["Images"], item => item.Images },
+                { _localizer["Small Images"], item => item.SmallImages },
             }
             , _localizer["Products"]);
         return result;

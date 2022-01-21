@@ -6,7 +6,7 @@ using LazyCache;
 namespace CleanArchitecture.Razor.Application.Common.Behaviours;
 
 public class CacheInvalidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-      where TRequest : IRequest<TResponse>,ICacheInvalidator 
+      where TRequest : IRequest<TResponse>, ICacheInvalidator
 {
     private readonly IAppCache _cache;
     private readonly ILogger<CacheInvalidationBehaviour<TRequest, TResponse>> _logger;
@@ -21,9 +21,6 @@ public class CacheInvalidationBehaviour<TRequest, TResponse> : IPipelineBehavior
     }
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
     {
-        var requestName = request.GetType();
-        _logger.LogInformation("{Request} is configured for cache expire.", requestName);
-
         var response = await next();
         if (!string.IsNullOrEmpty(request.CacheKey))
         {

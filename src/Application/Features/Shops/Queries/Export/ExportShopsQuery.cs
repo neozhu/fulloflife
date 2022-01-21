@@ -38,7 +38,7 @@ public class ExportShopsQueryHandler :
     {
         var filters = PredicateBuilder.FromFilter<Shop>(request.FilterRules);
         var data = await _context.Shops.Where(filters)
-                   .OrderBy("{request.Sort} {request.Order}")
+                   .OrderBy($"{request.Sort} {request.Order}")
                    .ProjectTo<ShopDto>(_mapper.ConfigurationProvider)
                    .ToListAsync(cancellationToken);
         var result = await _excelService.ExportAsync(data,

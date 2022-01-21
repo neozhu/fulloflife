@@ -132,15 +132,13 @@ public class IndexModel : PageModel
     }
     public async Task<IActionResult> OnPostImportAsync()
     {
-        var stream = new MemoryStream();
-        await UploadedFile.CopyToAsync(stream);
-        var command = new ImportProductsCommand()
+        using (var stream = new MemoryStream())
         {
-            FileName= UploadedFile.FileName,
-            Data=stream.ToArray()
-        };
-        var result = await _mediator.Send(command);
-        return new JsonResult(result);
+            await UploadedFile.CopyToAsync(stream);
+            var command = new ImportProductsCommand(UploadedFile.FileName, stream.ToArray());
+            var result = await _mediator.Send(command);
+            return new JsonResult(result);
+        }
     }
 
 }

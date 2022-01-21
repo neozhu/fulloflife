@@ -17,20 +17,21 @@
     var _canDelete = await _authorizationService.AuthorizeAsync(User, null, Permissions.Shops.Delete);
     var _canSearch = await _authorizationService.AuthorizeAsync(User, null, Permissions.Shops.Search);
     var _canExport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Shops.Export);
-    
+    var _canImport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Shops.Import);
+
 }
 @section HeadBlock {
 
-    <link rel="stylesheet" media="screen, print" href="~/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css">
-    <link rel="stylesheet" media="screen, print" href="~/css/fa-solid.css">
-    <link rel="stylesheet" media="screen, print" href="~/css/theme-demo.css">
-    <link rel="stylesheet" media="screen,print" href="~/lib/easyui/themes/insdep/easyui.css">
-    <style>
+<link rel="stylesheet" media="screen, print" href="~/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css">
+<link rel="stylesheet" media="screen, print" href="~/css/fa-solid.css">
+<link rel="stylesheet" media="screen, print" href="~/css/theme-demo.css">
+<link rel="stylesheet" media="screen,print" href="~/lib/easyui/themes/insdep/easyui.css">
+<style>
 
-        .shop_dg_datagrid-cell-c1-_action {
-            overflow: visible !important
-        }
-    </style>
+    .shop_dg_datagrid-cell-c1-_action {
+        overflow: visible !important
+    }
+</style>
 }
 <div id="js-page-content-demopanels" class="card mb-g">
     <div class="card-header bg-white d-flex align-items-center">
@@ -39,6 +40,13 @@
             <small></small>
         </h4>
         <div class="ml-auto">
+            @if (_canSearch.Succeeded)
+            {
+                <button class="btn btn-sm btn-outline-primary " id="refreshbutton">
+                    <span class="@(Settings.Theme.IconPrefix) fa-sync mr-1"></span>
+                    @_localizer["Refresh"]
+                </button>
+            }
             @if (_canCreate.Succeeded)
             {
                 <button class="btn btn-sm btn-outline-primary " id="addbutton">
@@ -53,12 +61,14 @@
                     @_localizer["Delete"]
                 </button>
             }
-            @if (_canSearch.Succeeded)
+
+            @if (_canImport.Succeeded)
             {
-                <button class="btn btn-sm btn-outline-primary " id="refreshbutton">
-                    <span class="@(Settings.Theme.IconPrefix) fa-sync mr-1"></span>
-                    @_localizer["Refresh"]
+                <button class="btn btn-sm btn-outline-primary " id="importbutton">
+                    <span class="@(Settings.Theme.IconPrefix) fa-upload mr-1"></span>
+                    @_localizer["Import Excel"]
                 </button>
+
             }
             @if (_canExport.Succeeded)
             {
@@ -133,27 +143,27 @@
                             <input type="text" asp-for="Input.Longitude" class="form-control" placeholder="@_localizer["Longitude"]" readonly="readonly" autocomplete="off" />
                             <span class="invalid-feedback" asp-validation-for="Input.Longitude">Sorry, you missed this one.</span>
                         </div>
-                       
+
                         <div class="col-md-12">
                             <label class="form-label" for=""></label>
-                            <input type="file" asp-for="UploadedFile" accept="image/png, image/gif, image/jpeg" style="display:none" required />
+                            <input type="file" asp-for="IconUploadedFile" accept="image/png, image/gif, image/jpeg" style="display:none" required />
                             <div class="">
-                                <button name="uploadbutton" type="button" class="btn btn-primary btn-icon waves-effect waves-themed mr-2">
+                                <button name="iconuploadbutton" type="button" class="btn btn-primary btn-icon waves-effect waves-themed mr-2">
                                     <i class="fal fa-paperclip"></i>
                                 </button>
                                 <small class="m-0 fw-300">
-                                        @_localizer["It is recommended that the size of the uploaded image be 68 × 68 pixels"]
+                                    @_localizer["It is recommended that the size of the uploaded image be 68 × 68 pixels"]
                                 </small>
-                                <div class="flex-row mt-2 mb-2" >
-                                     <div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
-                                         <img id="shop_icon" src="https://via.placeholder.com/68" alt="shop ico" />
-                                     </div>
+                                <div class="flex-row mt-2 mb-2">
+                                    <div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
+                                        <img id="shop_icon" src="https://via.placeholder.com/68" alt="shop ico" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-               
-                        
-                        
+
+
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -171,22 +181,22 @@
     onImportedSucceeded = "reloadData()"
 })
 @section ScriptsBlock {
-    <partial name="_ValidationScriptsPartial" />
-    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=PP4BZ-5M6E4-KN3UG-X22DN-H2XXK-YNFWB&libraries=place"></script>
-    <script charset="utf-8" src="https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=PP4BZ-5M6E4-KN3UG-X22DN-H2XXK-YNFWB"></script>
-   <script type="text/javascript" src="~/lib/easyui/jquery.easyui.min.js" asp-append-version="true"></script>
-    <script type="text/javascript" src="~/lib/easyui/plugins/datagrid-filter.js" asp-append-version="true"></script>
-    <script type="text/javascript" src="~/lib/easyui/jquery.easyui.component.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=PP4BZ-5M6E4-KN3UG-X22DN-H2XXK-YNFWB&libraries=place"></script>
+<script charset="utf-8" src="https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=PP4BZ-5M6E4-KN3UG-X22DN-H2XXK-YNFWB"></script>
+<script type="text/javascript" src="~/lib/easyui/jquery.easyui.min.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/lib/easyui/plugins/datagrid-filter.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/lib/easyui/jquery.easyui.component.js" asp-append-version="true"></script>
 
-    <script>jQuery.fn.tooltip = bootstrapTooltip;</script>
-    <script src="~/lib/jquery-form/jquery.jsonToForm.js"></script>
-    <script>
+<script>jQuery.fn.tooltip = bootstrapTooltip;</script>
+<script src="~/lib/jquery-form/jquery.jsonToForm.js"></script>
+<script>
        function initautocomplete() {
             var ap = new qq.maps.place.Autocomplete(document.getElementById('Input_Address'), {
                 offset: new qq.maps.Size(0, 5),
                 location: '江苏省',
                 zIndex: 99999
-                
+
             });
             var listener = qq.maps.event.addListener(
                ap,
@@ -210,9 +220,9 @@
                          });
               }
             );
-      
+
        }
-       
+
 
        var searchService = new qq.maps.SearchService({
         complete : function(results){
@@ -223,12 +233,12 @@
             var latlngBounds = new qq.maps.LatLngBounds();
             for(var i = 0,l = pois.length;i < l; i++){
                 var poi = pois[i];
-                latlngBounds.extend(poi.latLng);  
+                latlngBounds.extend(poi.latLng);
                 var marker = new qq.maps.Marker({
                     map:map,
                     position: poi.latLng
                 });
- 
+
                 marker.setTitle(poi.name);
             }
             map.fitBounds(latlngBounds);
@@ -238,217 +248,246 @@
        $('#shop_modal').on('shown.bs.modal',function() {
            initautocomplete()
        })
-      
-
-   
 
 
-    </script>
-    <script type="text/javascript">
 
-        $('#refreshbutton').click(function () {
-            reloadData();
-        });
-        $('#addbutton').click(function () {
-            popupmodal(null);
-        });
-        $('#deletebutton').click(function () {
-            onDeleteChecked();
-        });
-        $('#exportbutton').click(function () {
-            onExport();
-        });
-        $('#shop_form :submit').click(function (e) {
-            var form = document.querySelector('#shop_form');
-            if ($(form).valid() === false) {
-                form.classList.add('was-validated');
-            } else {
-                event.preventDefault();
-                event.stopPropagation();
-                var request = $('#shop_form').serialize();
-                var formData = new FormData(form);
-                formData.append("UploadedFile", uploadfileinput.files[0]);
-                axios({
-                    url: '@Url.Page("/Shops/Index")',
-                    method: 'post',
-                    data: formData,
-                    processData: false,// 告诉axios不要去处理发送的数据(重要参数)
-                    contentType: false,   // 告诉axios不要去设置Content-Type请求头
-                }).then((response) => {
-                        toastr["info"]('@_localizer["Save successfully"]');
-                        $('#shop_modal').modal('toggle');
-                        reloadData();
-                })
 
-            }
+
+</script>
+<script type="text/javascript">
+
+    $('#refreshbutton').click(function () {
+        reloadData();
+    });
+    $('#addbutton').click(function () {
+        popupmodal(null);
+    });
+    $('#deletebutton').click(function () {
+        onDeleteChecked();
+    });
+    $('#importbutton').click(function () {
+       showImportModal();
+    });
+    $('#exportbutton').click(function () {
+        onExport();
+    });
+    $('#shop_form :submit').click(function (e) {
+        var form = document.querySelector('#shop_form');
+        if ($(form).valid() === false) {
+            form.classList.add('was-validated');
+        } else {
             event.preventDefault();
             event.stopPropagation();
-        })
-
-        var uploadbutton = document.querySelector("button[name='uploadbutton']");
-        var productcatalogicon = document.querySelector("#shop_icon");
-        var uploadfileinput = document.getElementById("UploadedFile");
-        var savebutton = document.querySelector("button[name='savebutton']");
-        uploadbutton.addEventListener('click', (e) => {
-            uploadfileinput.click();
-        })
-        uploadfileinput.onchange = () => {
-            const filename = uploadfileinput.value.split('\\').pop();
-            const form = document.querySelector('#shop_form');
-            const formData = new FormData(form);
-            formData.append("UploadedFile", uploadfileinput.files[0]);
+            var request = $('#shop_form').serialize();
+            var formData = new FormData(form);
+            formData.append("IconUploadedFile", uploadiconfileinput.files[0]);
             axios({
-                    url: '@Url.Page("/Shops/Index")?handler=Qiniu',
-                    method: 'post',
-                    data: formData,
-                    processData: false,// 告诉axios不要去处理发送的数据(重要参数)
-                    contentType: false,   // 告诉axios不要去设置Content-Type请求头
-                }).then((response) => {
-                    const url =  response.data;
-                    $('#Input_Icon').val(url);
-                    productcatalogicon.src  = url;
-                        toastr["info"](`${filename}:@_localizer["upload to qiniu"]`);
-                })
-           
-            savebutton.disabled = false;
-            
-        };
-        var $dg={};
-        var initdatagrid = () => {
-            $dg = $('#shop_dg').datagrid({
-                height: 700,
-                method: 'GET',
-                rownumbers: false,
-                singleSelect: true,
-                selectOnCheck: false,
-                checkOnSelect: false,
-                pagination: true,
-                clientPaging: false,
-                remoteFilter: true,
-                sortName: 'Id',
-                sortOrder:'desc',
-                pageSize: 15,
-                pageList: [10, 15, 30, 50, 100, 1000],
-                onBeforeLoad: function () {
-                    $('#deletebutton').prop('disabled', true);
-                },
-                onCheckAll: function (rows) {
-                    const checked = $(this).datagrid('getChecked').length > 0;
-                    $('#deletebutton').prop('disabled', !checked);
-                },
-                onUncheckAll: function () {
-                    $('#deletebutton').prop('disabled', true);
-                },
-                onCheck: function () {
-                    $('#deletebutton').prop('disabled', false);
-                },
-                onUncheck: function () {
-                    const checked = $(this).datagrid('getChecked').length > 0;
-                    $('#deletebutton').prop('disabled', !checked);
-                },
-                columns: [[
-                    { field: 'ck', checkbox: true },
-                    {
-                        field: '_action',
-                        title: '@_localizer["Command"]',
-                        width: 100,
-                        align: 'center',
-                        formatter: function (value, row, index) {
-                            return `<div class="btn-group" role="group">
-                                      <button id="commandbtngroup" type="button" @(_canEdit.Succeeded? "":"disabled")  class="btn btn-outline-primary btn-sm dropdown-toggle waves-effect waves-themed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="@(Settings.Theme.IconPrefix) fa-edit"></i>
-                                     </button>
-                                     <div class="dropdown-menu dropdown-menu-animated" aria-labelledby="commandbtngroup">
-                                       <button class="dropdown-item" onclick="onEdit(${index})" @(_canEdit.Succeeded? "":"disabled")><i class="fal fa-edit mr-1"></i> @_localizer["Edit"]</button>
-                                       <button class="dropdown-item" onclick="onDelete('${row.Id}')" @(_canDelete.Succeeded? "":"disabled") ><i class="fal fa-trash-alt mr-1"></i> @_localizer["Delete"]</button>
-                                     </div>
-                                  </div>`;
-                        }
-                    },
-                    { field: 'Name',
-                      title: '@_localizer["Name"]',
-                      sortable: true,
-                      width: 300,
-                      formatter:function(value,row){
-                          return `<a href="#" class="fs-lg text-dark">${value}</a>
-                                  <br>
-                                 <small class="text-muted">${row.Address}</small>
-                                 `
-                      }
-                    },
-                    { field: 'ContactName',
-                      title: '@_localizer["Contact Name"]',
-                      sortable: true,
-                      width: 200,
-                      formatter:function(value,row){
-                          return `<a href="#" class="fs-lg text-dark">${value}</a>
-                                  <br>
-                                 <small class="text-muted">${row.ContactPhone}</small>
-                                 `
-                      }
-                    },
-                    { field: 'DeliveryDistance', title: '@_localizer["Delivery Distance"]', sortable: true, width: 160 },
-                    { field: 'MinCharge', title: '@_localizer["Min Charge"]', sortable: true, width: 160 },
-                    { field: 'Icon', title: '@_localizer["Icon"]', sortable: true, width: 100,
-                      align: 'center',
-                      formatter:function(value) {
-                         if(value){
-                             return `<div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
-                                         <img id="shop_icon" src="${value}" alt="product catalog icon" />
-                                 </div>`
-                         }
-                         
-                      }
-                    },
-                   
-                ]]
+                url: '@Url.Page("/Shops/Index")',
+                method: 'post',
+                data: formData,
+                processData: false,// 告诉axios不要去处理发送的数据(重要参数)
+                contentType: false,   // 告诉axios不要去设置Content-Type请求头
+            }).then((response) => {
+                    toastr["info"]('@_localizer["Save successfully"]');
+                    $('#shop_modal').modal('toggle');
+                    reloadData();
             })
-                .datagrid('enableFilter', {})
-                .datagrid('load', '@Url.Page("/Shops/Index")?handler=Data');
 
         }
+        event.preventDefault();
+        event.stopPropagation();
+    })
 
-        var reloadData = () => {
-            $dg.datagrid('load', '@Url.Page("/Shops/Index")?handler=Data');
-        }
+    var iconuploadbutton = document.querySelector("button[name='iconuploadbutton']");
+    var productcatalogicon = document.querySelector("#shop_icon");
+    var uploadiconfileinput = document.getElementById("IconUploadedFile");
+    var savebutton = document.querySelector("button[name='savebutton']");
+    iconuploadbutton.addEventListener('click', (e) => {
+        uploadiconfileinput.click();
+    })
+    uploadiconfileinput.onchange = () => {
+        const filename = uploadiconfileinput.value.split('\\').pop();
+        const form = document.querySelector('#shop_form');
+        const formData = new FormData(form);
+        formData.append("IconUploadedFile", uploadiconfileinput.files[0]);
+        axios({
+                url: '@Url.Page("/Shops/Index")?handler=Qiniu',
+                method: 'post',
+                data: formData,
+                processData: false,// 告诉axios不要去处理发送的数据(重要参数)
+                contentType: false,   // 告诉axios不要去设置Content-Type请求头
+            }).then((response) => {
+                const url =  response.data;
+                $('#Input_Icon').val(url);
+                productcatalogicon.src  = url;
+                    toastr["info"](`${filename}:@_localizer["upload to qiniu"]`);
+            })
 
-        $(() => {
-            initdatagrid();
-        })
-        var popupmodal = (shop) => {
-            $('#shop_modal').modal('toggle');
-            $('#shop_modal .modal-title').html('@_localizer["Add Shop"]');
-            $('#shop_form').clearForm();
-            $('#shop_form')[0].reset();
-            if (shop) {
+        savebutton.disabled = false;
 
-                $('#shop_modal .modal-title').html('@_localizer["Add Shop"]');
-                productcatalogicon.src = shop.Icon;
-                $('#shop_form').jsonToForm(shop, {
-                    Icon:function(v) {
-                         $('#shop_form #Input_Icon').val(v);
-                        if(v){
-                            productcatalogicon.src = v;
-                        }else{
-                            productcatalogicon.src = "https://via.placeholder.com/68";
-                        }
+    };
+    var $dg={};
+    var initdatagrid = () => {
+        $dg = $('#shop_dg').datagrid({
+            height: 700,
+            method: 'GET',
+            rownumbers: false,
+            singleSelect: true,
+            selectOnCheck: false,
+            checkOnSelect: false,
+            pagination: true,
+            clientPaging: false,
+            remoteFilter: true,
+            sortName: 'Id',
+            sortOrder:'desc',
+            pageSize: 15,
+            pageList: [10, 15, 30, 50, 100, 1000],
+            onBeforeLoad: function () {
+                $('#deletebutton').prop('disabled', true);
+            },
+            onCheckAll: function (rows) {
+                const checked = $(this).datagrid('getChecked').length > 0;
+                $('#deletebutton').prop('disabled', !checked);
+            },
+            onUncheckAll: function () {
+                $('#deletebutton').prop('disabled', true);
+            },
+            onCheck: function () {
+                $('#deletebutton').prop('disabled', false);
+            },
+            onUncheck: function () {
+                const checked = $(this).datagrid('getChecked').length > 0;
+                $('#deletebutton').prop('disabled', !checked);
+            },
+            columns: [[
+                { field: 'ck', checkbox: true },
+                {
+                    field: '_action',
+                    title: '@_localizer["Command"]',
+                    width: 100,
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return `<div class="btn-group" role="group">
+                                  <button id="commandbtngroup" type="button" @(_canEdit.Succeeded? "":"disabled")  class="btn btn-outline-primary btn-sm dropdown-toggle waves-effect waves-themed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="@(Settings.Theme.IconPrefix) fa-edit"></i>
+                                 </button>
+                                 <div class="dropdown-menu dropdown-menu-animated" aria-labelledby="commandbtngroup">
+                                   <button class="dropdown-item" onclick="onEdit(${index})" @(_canEdit.Succeeded? "":"disabled")><i class="fal fa-edit mr-1"></i> @_localizer["Edit"]</button>
+                                   <button class="dropdown-item" onclick="onDelete('${row.Id}')" @(_canDelete.Succeeded? "":"disabled") ><i class="fal fa-trash-alt mr-1"></i> @_localizer["Delete"]</button>
+                                 </div>
+                              </div>`;
                     }
-                })
-            } else {
- 
-                $('#shop_form #Input_Id').val(0);
-                $('#shop_form #Input_Icon').val('');
-                productcatalogicon.src = "https://via.placeholder.com/68";
-            }
-        }
+                },
+                { field: 'Name',
+                  title: '@_localizer["Name"]',
+                  sortable: true,
+                  width: 300,
+                  formatter:function(value,row){
+                      return `<a href="#" class="fs-lg text-dark">${value}</a>
+                              <br>
+                             <small class="text-muted">${row.Address}</small>
+                             `
+                  }
+                },
+                { field: 'ContactName',
+                  title: '@_localizer["Contact Name"]',
+                  sortable: true,
+                  width: 200,
+                  formatter:function(value,row){
+                      return `<a href="#" class="fs-lg text-dark">${value}</a>
+                              <br>
+                             <small class="text-muted">${row.ContactPhone}</small>
+                             `
+                  }
+                },
+                { field: 'DeliveryDistance', title: '@_localizer["Delivery Distance"]', sortable: true, width: 160 },
+                { field: 'MinCharge', title: '@_localizer["Min Charge"]', sortable: true, width: 160 },
+                { field: 'Icon', title: '@_localizer["Icon"]', sortable: true, width: 100,
+                  align: 'center',
+                  formatter:function(value) {
+                     if(value){
+                         return `<div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
+                                     <img id="shop_icon" src="${value}" alt="product catalog icon" />
+                             </div>`
+                     }
 
-        var onEdit = (index) => {
-            var shop = $dg.datagrid('getRows')[index];
-            popupmodal(shop);
+                  }
+                },
+
+            ]]
+        })
+            .datagrid('enableFilter', {})
+            .datagrid('load', '@Url.Page("/Shops/Index")?handler=Data');
+
+    }
+
+    var reloadData = () => {
+        $dg.datagrid('load', '@Url.Page("/Shops/Index")?handler=Data');
+    }
+
+    $(() => {
+        initdatagrid();
+    })
+    var popupmodal = (shop) => {
+        $('#shop_modal').modal('toggle');
+        $('#shop_modal .modal-title').html('@_localizer["Add Shop"]');
+        $('#shop_form').clearForm();
+        $('#shop_form')[0].reset();
+        if (shop) {
+
+            $('#shop_modal .modal-title').html('@_localizer["Add Shop"]');
+            productcatalogicon.src = shop.Icon;
+            $('#shop_form').jsonToForm(shop, {
+                Icon:function(v) {
+                     $('#shop_form #Input_Icon').val(v);
+                    if(v){
+                        productcatalogicon.src = v;
+                    }else{
+                        productcatalogicon.src = "https://via.placeholder.com/68";
+                    }
+                }
+            })
+        } else {
+
+            $('#shop_form #Input_Id').val(0);
+            $('#shop_form #Input_Icon').val('');
+            productcatalogicon.src = "https://via.placeholder.com/68";
         }
-        var onDelete = (id) => {
+    }
+
+    var onEdit = (index) => {
+        var shop = $dg.datagrid('getRows')[index];
+        popupmodal(shop);
+    }
+    var onDelete = (id) => {
+        bootbox.confirm({
+            message: "@_localizer["Are you sure delete a row?"]",
+            buttons: {
+                confirm: {
+                    label: '@_localizer["Yes"]',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: '@_localizer["No"]',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    axios.get('@Url.Page("/Shops/Index")?handler=Delete&id=' + id).then(res => {
+                        toastr["info"]('@_localizer["Delete successfully"]');
+                        reloadData();
+                    })
+
+                }
+            }
+        })
+    }
+    var onDeleteChecked = () => {
+        var checkedId = $dg.datagrid('getChecked').map(x => x.Id);
+        if (checkedId.length > 0) {
             bootbox.confirm({
-                message: "@_localizer["Are you sure delete a row?"]",
+                message: "@_localizer["Are you sure delete checked rows?"]",
                 buttons: {
                     confirm: {
                         label: '@_localizer["Yes"]',
@@ -461,82 +500,46 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        axios.get('@Url.Page("/Shops/Index")?handler=Delete&id=' + id).then(res => {
-                            toastr["info"]('@_localizer["Delete successfully"]');
+                        axios.post('@Url.Page("/Shops/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
+                            toastr["info"](`@_localizer["Delete ${checkedId.length} successfully"]`);
                             reloadData();
                         })
-                           
+
                     }
                 }
+            });
+
+        }
+    }
+    var onExport = () => {
+        var options = $dg.datagrid('options');
+        var data = {
+            filterRules: JSON.stringify(options.filterRules),
+            sort: options.sortName,
+            order: options.sortOrder,
+        }
+
+        axios.post('@Url.Page("/Shops/Index")?handler=Export',
+            data,
+            {
+                responseType: "blob"
             })
-        }
-        var onDeleteChecked = () => {
-            var checkedId = $dg.datagrid('getChecked').map(x => x.Id);
-            if (checkedId.length > 0) {
-                bootbox.confirm({
-                    message: "@_localizer["Are you sure delete checked rows?"]",
-                    buttons: {
-                        confirm: {
-                            label: '@_localizer["Yes"]',
-                            className: 'btn-success'
-                        },
-                        cancel: {
-                            label: '@_localizer["No"]',
-                            className: 'btn-danger'
-                        }
-                    },
-                    callback: function (result) {
-                        if (result) {
-                            axios.post('@Url.Page("/Shops/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
-                                toastr["info"](`@_localizer["Delete ${checkedId.length} successfully"]`);
-                                reloadData();
-                            })
-                               
-                        }
-                    }
-                });
-
-            }
-        }
-        var onExport = () => {
-            var options = $dg.datagrid('options');
-            var data = {
-                filterRules: JSON.stringify(options.filterRules),
-                sort: options.sortName,
-                order: options.sortOrder,
-            }
-
-            axios.post('@Url.Page("/Shops/Index")?handler=Export',
-                data,
-                {
-                    responseType: "blob"
-                })
-                .then(response => {
-                    const filename = getFileName(response.headers['content-disposition']);
-                    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officeshop.spreadsheetml.sheet;charset=utf-8' }));
-                    const link = shop.createElement('a');
-                    link.href = url;
-                    link.setAttribute('download', filename);
-                    shop.body.appendChild(link);
-                    link.click();
-                    toastr["info"](`@_localizer["Export successfully"]`);
-                })
+            .then(response => {
+                const filename = getFileName(response.headers['content-disposition']);
+                const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officeshop.spreadsheetml.sheet;charset=utf-8' }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', filename);
+                document.body.appendChild(link);
+                link.click();
+                toastr["info"](`@_localizer["Export successfully"]`);
+            })
 
 
-        }
-        var onDownload = (index) => {
-            const item = $dg.datagrid('getRows')[index];
-            const url = item.URL;
-            const filename = getFileName(item.URL);
-            const link = shop.createElement('a');
-            link.href = url;
-            link.setAttribute('download', filename);
-            shop.body.appendChild(link);
-            link.click();
-            toastr["info"](`@_localizer["Download successfully"]`);
-        }
+    }
+     
 
 
 
-    </script>
+</script>
 }

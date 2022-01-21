@@ -11,20 +11,25 @@ public class ProductDto : IMapFrom<Product>
 {
     public void Mapping(Profile profile)
     {
+        var serializeOptions = new JsonSerializerOptions
+        {
+            WriteIndented = false,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
         profile.CreateMap<Product, ProductDto>()
                  .ForMember(x => x.CategoryName, y => y.MapFrom(z => z.Category.Name))
-                 .ForMember(x=>x.Labels, y => y.MapFrom(z=>JsonSerializer.Serialize(z.Labels, (JsonSerializerOptions)null)))
-                 .ForMember(x=>x.Images, y => y.MapFrom(z=>JsonSerializer.Serialize(z.Images, (JsonSerializerOptions)null)))
-                 .ForMember(x => x.SmallImages, y => y.MapFrom(z => JsonSerializer.Serialize(z.SmallImages, (JsonSerializerOptions)null)))
-                 .ForMember(x => x.Options, y => y.MapFrom(z => JsonSerializer.Serialize(z.Options, (JsonSerializerOptions)null)))
+                 .ForMember(x=>x.Labels, y => y.MapFrom(z=>JsonSerializer.Serialize(z.Labels, serializeOptions)))
+                 .ForMember(x=>x.Images, y => y.MapFrom(z=>JsonSerializer.Serialize(z.Images, serializeOptions)))
+                 .ForMember(x => x.SmallImages, y => y.MapFrom(z => JsonSerializer.Serialize(z.SmallImages, serializeOptions)))
+                 .ForMember(x => x.Options, y => y.MapFrom(z => JsonSerializer.Serialize(z.Options, serializeOptions)))
                  ;
 
         profile.CreateMap<ProductDto, Product>()
                 .ForMember(x => x.Category, y => y.Ignore())
-                .ForMember(x => x.Labels, y => y.MapFrom(z => JsonSerializer.Deserialize<string[]?>(z.Labels, (JsonSerializerOptions)null)))
-                .ForMember(x => x.Images, y => y.MapFrom(z => JsonSerializer.Deserialize<string[]?>(z.Images, (JsonSerializerOptions)null)))
-                .ForMember(x => x.SmallImages, y => y.MapFrom(z => JsonSerializer.Deserialize<string[]?>(z.SmallImages, (JsonSerializerOptions)null)))
-                .ForMember(x => x.Options, y => y.MapFrom(z =>string.IsNullOrEmpty(z.Options)?null:JsonSerializer.Deserialize<Dictionary<string,IList<SKU>>?>(z.Options, (JsonSerializerOptions)null)))
+                .ForMember(x => x.Labels, y => y.MapFrom(z => JsonSerializer.Deserialize<string[]?>(z.Labels, serializeOptions)))
+                .ForMember(x => x.Images, y => y.MapFrom(z => JsonSerializer.Deserialize<string[]?>(z.Images, serializeOptions)))
+                .ForMember(x => x.SmallImages, y => y.MapFrom(z => JsonSerializer.Deserialize<string[]?>(z.SmallImages, serializeOptions)))
+                .ForMember(x => x.Options, y => y.MapFrom(z =>JsonSerializer.Deserialize<Dictionary<string,IList<SKU>>?>(z.Options, serializeOptions)))
                 ;
 
     }

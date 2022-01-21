@@ -3,15 +3,23 @@
 
 
 using System.Text.Json;
+using CleanArchitecture.Razor.Application.Features.Products.Caching;
 using CleanArchitecture.Razor.Application.Features.Products.DTOs;
 using static CleanArchitecture.Razor.Domain.Entities.Product;
 
 namespace CleanArchitecture.Razor.Application.Features.Products.Commands.Import;
 
-public class ImportProductsCommand : IRequest<Result>
+public class ImportProductsCommand : IRequest<Result>, ICacheInvalidator
 {
-    public string? FileName { get; set; }
+    public ImportProductsCommand(string fileName,byte[] data)
+    {
+        FileName = fileName;
+        Data = data;
+    }
+    public string FileName { get; set; }
     public byte[] Data { get; set; }
+    public string CacheKey => nameof(ImportProductsCommand);
+    public CancellationTokenSource ResetCacheToken => ProductCacheKey.ResetCacheToken;
 }
 public class CreateProductsTemplateCommand : IRequest<byte[]>
 {
@@ -68,7 +76,14 @@ public class ImportProductsCommandHandler :
         {
             foreach(var dto in result.Data)
             {
+                var category = await _context.Categories.FirstAsync(x => x.Name == dto.CategoryName);
+                if(category is null)
+                {
+                    throw new Exception($"not found product catalog by: {dto.CategoryName}");
+                }
                 var item = _mapper.Map<Product>(dto);
+                item.Category = category;
+                item.CategoryId=category.Id;
                 await _context.Products.AddAsync(item, cancellationToken);
             }
             await _context.SaveChangesAsync(cancellationToken);

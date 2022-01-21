@@ -7,6 +7,11 @@ namespace CleanArchitecture.Razor.Application.Features.Shops.Commands.Import;
 
 public class ImportShopsCommand : IRequest<Result>
 {
+    public ImportShopsCommand(string fileName, byte[] data)
+    {
+        FileName = fileName;
+        Data = data;
+    }
     public string FileName { get; set; }
     public byte[] Data { get; set; }
 }
@@ -54,10 +59,10 @@ public class ImportShopsCommandHandler :
         }, _localizer["Shops"]);
         if (result.Succeeded)
         {
-            foreach(var dto in result.Data)
+            foreach (var dto in result.Data)
             {
                 var item = _mapper.Map<Shop>(dto);
-               await  _context.Shops.AddAsync(item, cancellationToken);
+                await _context.Shops.AddAsync(item, cancellationToken);
             }
             await _context.SaveChangesAsync(cancellationToken);
             return Result.Success();

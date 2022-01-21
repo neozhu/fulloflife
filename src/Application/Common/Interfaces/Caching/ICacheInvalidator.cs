@@ -5,6 +5,6 @@ namespace CleanArchitecture.Razor.Application.Common.Interfaces.Caching;
 
 public interface ICacheInvalidator
 {
-    string CacheKey { get; }
-    CancellationTokenSource ResetCacheToken { get; }
+    string? CacheKey { get; }
+    CancellationTokenSource? ResetCacheToken { get; }
 }

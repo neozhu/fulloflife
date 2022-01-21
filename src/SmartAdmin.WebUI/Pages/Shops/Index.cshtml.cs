@@ -15,6 +15,7 @@ using CleanArchitecture.Razor.Application.Common.Interfaces;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Png;
+using CleanArchitecture.Razor.Application.Features.Shops.Commands.Import;
 
 namespace SmartAdmin.WebUI.Pages.Shops;
 
@@ -25,7 +26,8 @@ public class IndexModel : PageModel
     public AddEditShopCommand Input { get; set; }
     [BindProperty]
     public IFormFile UploadedFile { get; set; }
-
+    [BindProperty]
+    public IFormFile IconUploadedFile { get; set; }
 
     private readonly ISender _mediator;
     private readonly IStringLocalizer<IndexModel> _localizer;
@@ -59,7 +61,7 @@ public class IndexModel : PageModel
     }
     public async Task<IActionResult> OnPostQiniu()
     {
-        var filename = UploadedFile.FileName;
+        var filename = IconUploadedFile.FileName;
         using (var smallStream = new MemoryStream())
         using (var stream = new MemoryStream())
         {
@@ -101,6 +103,15 @@ public class IndexModel : PageModel
         var result = await _mediator.Send(command);
         return File(result, "application/vnd.openxmlformats-officeShop.spreadsheetml.sheet", _localizer["Shops"] + ".xlsx");
     }
-
+    public async Task<IActionResult> OnPostImportAsync()
+    {
+        using (var stream = new MemoryStream())
+        {
+            await UploadedFile.CopyToAsync(stream);
+            var command = new ImportShopsCommand(UploadedFile.FileName, stream.ToArray());
+            var result = await _mediator.Send(command);
+            return new JsonResult(result);
+        }
+    }
 
 }

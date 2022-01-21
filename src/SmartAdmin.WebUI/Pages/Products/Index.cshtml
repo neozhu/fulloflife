@@ -60,14 +60,14 @@
                     @_localizer["Delete"]
                 </button>
             }
-            @*@if (_canImport.Succeeded)
+            @if (_canImport.Succeeded)
 			{
                 <button class="btn btn-sm btn-outline-primary " id="importbutton">
                    <span class="@(Settings.Theme.IconPrefix) fa-upload mr-1"></span>
                    @_localizer["Import Excel"]
                 </button>
 				 
-			}*@
+			}
             @if (_canExport.Succeeded)
             {
                 <button class="btn btn-sm btn-outline-primary " id="exportbutton">
@@ -263,7 +263,7 @@
     });
     $('#importbutton').click(function () {
 		   showImportModal();
-	    });
+	});
     $('#product_form :submit').click(function (e) {
         var form = document.querySelector('#product_form');
         if ($(form).valid() === false) {
