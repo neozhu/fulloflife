@@ -44,6 +44,7 @@ public class ProductDto : IMapFrom<Product>
     public int Sort { get; set; }
     public bool IsNew { get; set; } = true;
     public bool IsEnable { get; set; } = true;
+    public bool HasRecommend { get; set; }
     public bool IsSingle { get; set; }
     public string? Options { get; set; }
     public string? Labels { get; set; }

@@ -16,6 +16,7 @@ public class Product : AuditableEntity
     public bool IsNew { get; set; } = true;
     public bool IsEnable { get; set; } = true;
     public bool IsSingle { get; set; }
+    public bool HasRecommend { get; set; }
     public Dictionary<string, IList<SKU>>? Options { get; set; }
     public string[]? Labels { get; set; }
     public decimal? Price { get; set; }

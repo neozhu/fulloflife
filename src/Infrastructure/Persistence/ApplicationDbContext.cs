@@ -48,6 +48,9 @@ public class ApplicationDbContext : IdentityDbContext<
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Shop> Shops { get; set; } = null!;
+    public DbSet<Notice> Notices { get; set; } = null!;
+    public DbSet<Advertising> Advertisings { get; set; } = null!;
+    public DbSet<HistorySearch> HistorySearchs { get; set; } = null!;
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
         var auditEntries = OnBeforeSaveChanges(_currentUserService.UserId);

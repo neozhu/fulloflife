@@ -16,5 +16,8 @@ public interface IApplicationDbContext
     DbSet<Shop> Shops { get; set; }
     DbSet<Product> Products { get; set; }
     DbSet<Category> Categories { get; set; }
+    DbSet<Notice> Notices { get; set; }
+    DbSet<Advertising> Advertisings { get; set; }
+    DbSet<HistorySearch> HistorySearchs { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
