@@ -27,7 +27,20 @@
           "href": "categories_index.html",
           "roles": []
         }
-      
+
+      ]
+    },
+    {
+      "title": "Shop Settings",
+      "icon": "fal fa-cubes",
+      "roles": [ "Admin", "Basic" ],
+      "items": [
+        {
+          "title": "Advertising",
+          "href": "advertisings_index.html",
+          "roles": []
+        }
+
       ]
     },
     {

@@ -63,6 +63,18 @@ public static class Permissions
         public const string Export = "Permissions.Shops.Export";
         public const string Import = "Permissions.Shops.Import";
     }
+    [DisplayName("Advertising")]
+    [Description("Advertising Permissions")]
+    public static class Advertising
+    {
+        public const string View = "Permissions.Advertising.View";
+        public const string Create = "Permissions.Advertising.Create";
+        public const string Edit = "Permissions.Advertising.Edit";
+        public const string Delete = "Permissions.Advertising.Delete";
+        public const string Search = "Permissions.Advertising.Search";
+        public const string Export = "Permissions.Advertising.Export";
+        public const string Import = "Permissions.Advertising.Import";
+    }
 
     [DisplayName("Categories")]
     [Description("Categories Permissions")]

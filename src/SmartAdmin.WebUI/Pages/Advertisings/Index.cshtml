@@ -2,36 +2,36 @@
 @using CleanArchitecture.Razor.Domain.Enums
 @using Microsoft.AspNetCore.Mvc.Localization
 @using CleanArchitecture.Razor.Application.Constants.Permission
-@model SmartAdmin.WebUI.Pages.Categories.IndexModel
+@model SmartAdmin.WebUI.Pages.Advertisings.IndexModel
 @inject Microsoft.Extensions.Localization.IStringLocalizer<IndexModel> _localizer
 @inject Microsoft.AspNetCore.Authorization.IAuthorizationService _authorizationService
 @{
-    ViewData["Title"] = _localizer["Product Catalog"].Value;
-    ViewData["PageName"] = "categories_index";
-    ViewData["Category1"] = _localizer["Production"].Value;
-    ViewData["Heading"] = _localizer["Categories"].Value;
-    ViewData["PageDescription"] = _localizer["Product Catalog"].Value;
+    ViewData["Title"] = _localizer["Advertising"].Value;
+    ViewData["PageName"] = "advertisings_index";
+    ViewData["Category1"] = _localizer["Shop Settings"].Value;
+    ViewData["Heading"] = _localizer["Advertisings"].Value;
+    ViewData["PageDescription"] = _localizer["Advertising"].Value;
     ViewData["PreemptiveClass"] = "Default";
-    var _canCreate = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Create);
-    var _canEdit = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Edit);
-    var _canDelete = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Delete);
-    var _canSearch = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Search);
-    var _canExport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Export);
-    var _canImport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Categories.Import);
-    
+    var _canCreate = await _authorizationService.AuthorizeAsync(User, null, Permissions.Advertising.Create);
+    var _canEdit = await _authorizationService.AuthorizeAsync(User, null, Permissions.Advertising.Edit);
+    var _canDelete = await _authorizationService.AuthorizeAsync(User, null, Permissions.Advertising.Delete);
+    var _canSearch = await _authorizationService.AuthorizeAsync(User, null, Permissions.Advertising.Search);
+    var _canExport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Advertising.Export);
+    var _canImport = await _authorizationService.AuthorizeAsync(User, null, Permissions.Advertising.Import);
+
 }
 @section HeadBlock {
+    <link rel="stylesheet" href="~/css/formplugins/select2/select2.bundle.css" />
+<link rel="stylesheet" media="screen, print" href="~/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css">
+<link rel="stylesheet" media="screen, print" href="~/css/fa-solid.css">
+<link rel="stylesheet" media="screen, print" href="~/css/theme-demo.css">
+<link rel="stylesheet" media="screen,print" href="~/lib/easyui/themes/insdep/easyui.css">
+<style>
 
-    <link rel="stylesheet" media="screen, print" href="~/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css">
-    <link rel="stylesheet" media="screen, print" href="~/css/fa-solid.css">
-    <link rel="stylesheet" media="screen, print" href="~/css/theme-demo.css">
-    <link rel="stylesheet" media="screen,print" href="~/lib/easyui/themes/insdep/easyui.css">
-    <style>
-
-        .category_dg_datagrid-cell-c1-_action {
-            overflow: visible !important
-        }
-    </style>
+    .advertising_dg_datagrid-cell-c1-_action {
+        overflow: visible !important
+    }
+</style>
 }
 <div id="js-page-content-demopanels" class="card mb-g">
     <div class="card-header bg-white d-flex align-items-center">
@@ -61,15 +61,15 @@
                     @_localizer["Delete"]
                 </button>
             }
-           
+
             @if (_canImport.Succeeded)
-			{
+            {
                 <button class="btn btn-sm btn-outline-primary " id="importbutton">
-                   <span class="@(Settings.Theme.IconPrefix) fa-upload mr-1"></span>
-                   @_localizer["Import Excel"]
+                    <span class="@(Settings.Theme.IconPrefix) fa-upload mr-1"></span>
+                    @_localizer["Import Excel"]
                 </button>
-				 
-			}
+
+            }
             @if (_canExport.Succeeded)
             {
                 <button class="btn btn-sm btn-outline-primary " id="exportbutton">
@@ -82,13 +82,13 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-12">
-                <table id="category_dg">
+                <table id="advertising_dg">
                 </table>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="category_modal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false">
+<div class="modal fade" id="advertising_modal" tabindex="-1" aria-hidden="true" data-backdrop="static" role="dialog" aria-hidden="true" data-keyboard="false">
     <div class="modal-dialog modal-lg" role="dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -97,23 +97,35 @@
                     <span aria-hidden="true"><i class="@(Settings.Theme.IconPrefix) fa-times"></i></span>
                 </button>
             </div>
-            <form id="category_form" class="needs-validation" novalidate="novalidate">
+            <form id="advertising_form" class="needs-validation" novalidate="novalidate">
                 <div class="modal-body">
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Input.Id" />
-                    <input type="hidden" asp-for="Input.Icon" />
+                    <input type="hidden" asp-for="Input.Picture" />
                     <div class="form-row">
-                        <div class="col-md-6">
-                            <label class="form-label" for="Name">@_localizer["Name"] <span class="text-danger">*</span></label>
-                            <input type="text" asp-for="Input.Name" class="form-control" placeholder="@_localizer["Name"]" />
-                            <span class="invalid-feedback" asp-validation-for="Input.Name">Sorry, you missed this one.</span>
+                        <div class="col-md-6 mb-1">
+                            <label class="form-label" asp-for="Input.Category">@_localizer["Category"] <span class="text-danger">*</span></label>
+                            <select type="text" asp-for="Input.Category" asp-dictionaries-for="Category" class="form-control select2" placeholder="@_localizer["Category"]">
+                            </select>
+                            <span class="invalid-feedback" asp-validation-for="Input.Category">Sorry, you missed this one.</span>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label" for="Sequence">@_localizer["Index"]</label>
-                            <input type="number" asp-for="Input.Sequence" class="form-control" placeholder="@_localizer["Index"]" />
-                            <span class="invalid-feedback" asp-validation-for="Input.Sequence">Sorry, you missed this one.</span>
+                        <div class="col-md-6 mb-1">
+                            <label class="form-label" asp-for="Input.ExpiredDate">@_localizer["Expired Date"] <span class="text-danger">*</span></label>
+                            <input type="date" asp-for="Input.ExpiredDate" class="form-control" placeholder="Expired Date" />
+                            <span class="invalid-feedback" asp-validation-for="Input.ExpiredDate">Sorry, you missed this one.</span>
                         </div>
-                         <div class="col-md-12">
+                        <div class="col-md-12 mb-1">
+                            <label class="form-label" asp-for="Input.Content">@_localizer["Content"] <span class="text-danger">*</span></label>
+                            <textarea type="text" asp-for="Input.Content" class="form-control" rows="3" placeholder="@_localizer["Content"]" autocomplete="off"></textarea>
+                            <span class="invalid-feedback" asp-validation-for="Input.Content">Sorry, you missed this one.</span>
+                        </div>
+                        <div class="col-md-12 mb-1">
+                            <label class="form-label" asp-for="Input.RelevantProductId">@_localizer["Relevant Product"]</label>
+                            <select type="text" asp-for="Input.RelevantProductId" asp-items="Model.RelevantProduct" class="form-control select2" placeholder="@_localizer["Relevant Product"]">
+                            </select>
+                            <span class="invalid-feedback" asp-validation-for="Input.RelevantProductId">Sorry, you missed this one.</span>
+                        </div>
+                        <div class="col-md-12">
                             <label class="form-label" for=""></label>
                             <input type="file" asp-for="IconUploadedFile" accept="image/png, image/gif, image/jpeg" style="display:none" required />
                             <div class="">
@@ -122,19 +134,14 @@
                                 </button>
                                 <span class="text-danger">*</span>
                                 <small class="m-0 fw-300">
-                                        @_localizer["It is recommended that the size of the uploaded image be 68 × 68 pixels"]
+                                    @_localizer["It is recommended that the size of the uploaded image be 1280 × 720 pixels"]
                                 </small>
-                                <div class="flex-row mt-2 mb-2" >
-                                     <div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
-                                         <img id="product_catalog_icon" src="https://via.placeholder.com/68" alt="product catalog icon" />
-                                     </div>
+                                <div class="flex-row mt-2 mb-2">
+                                    <div class="rounded width-20 height-15 d-inline-block bg-faded shadow-1">
+                                        <img class="width-20 height-15" id="ads_picture" src="https://via.placeholder.com/800x450.png" alt="product catalog icon" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label" for="Description">@_localizer["Description"] </label>
-                            <input type="text" asp-for="Input.Description" class="form-control" placeholder="@_localizer["Description"]" />
-                            <span class="invalid-feedback" asp-validation-for="Input.Description">Sorry, you missed this one.</span>
                         </div>
                     </div>
                 </div>
@@ -148,22 +155,29 @@
 </div>
 @await Component.InvokeAsync("ImportExcel", new
 {
-    importUri = Url.Page("/Categories/Index") + "?handler=Import",
-    getTemplateUri = @Url.Page("/Categories/Index") + "?handler=CreateTemplate",
+    importUri = Url.Page("/Advertisings/Index") + "?handler=Import",
+    getTemplateUri = @Url.Page("/Advertisings/Index") + "?handler=CreateTemplate",
     onImportedSucceeded = "reloadData()"
 })
 @section ScriptsBlock {
-    <partial name="_ValidationScriptsPartial" />
+<partial name="_ValidationScriptsPartial" />
 
-    <script type="text/javascript" src="~/lib/easyui/jquery.easyui.min.js" asp-append-version="true"></script>
-    <script type="text/javascript" src="~/lib/easyui/plugins/datagrid-filter.js" asp-append-version="true"></script>
-    <script type="text/javascript" src="~/lib/easyui/jquery.easyui.component.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/lib/easyui/jquery.easyui.min.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/lib/easyui/plugins/datagrid-filter.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/lib/easyui/jquery.easyui.component.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/js/formplugins/select2/select2.bundle.js" asp-append-version="true"></script>
+<script>jQuery.fn.tooltip = bootstrapTooltip;</script>
+<script src="~/lib/jquery-form/jquery.jsonToForm.js"></script>
 
-    <script>jQuery.fn.tooltip = bootstrapTooltip;</script>
-    <script src="~/lib/jquery-form/jquery.jsonToForm.js"></script>
-
-    <script type="text/javascript">
-
+<script type="text/javascript">
+        var taglabels,select2
+        $(() => {
+           initdatagrid();
+           select2 = $('.select2').select2({
+                allowClear: true,
+                placeholder: "Select a item",
+               dropdownParent: $('#advertising_modal')});
+        })
         $('#refreshbutton').click(function () {
             reloadData();
         });
@@ -177,26 +191,26 @@
             onExport();
         });
         $('#importbutton').click(function () {
-		   showImportModal();
-	    });
-        $('#category_form :submit').click(function (e) {
-            var form = document.querySelector('#category_form');
+           showImportModal();
+        });
+        $('#advertising_form :submit').click(function (e) {
+            var form = document.querySelector('#advertising_form');
             if ($(form).valid() === false) {
                 form.classList.add('was-validated');
             } else {
                 event.preventDefault();
                 event.stopPropagation();
-                var request = $('#category_form').serialize();
+                var request = $('#advertising_form').serialize();
                 var formData = new FormData(form);
                 axios({
-                    url: '@Url.Page("/Categories/Index")',
+                    url: '@Url.Page("/Advertisings/Index")',
                     method: 'post',
                     data: formData,
                     processData: false,// 告诉axios不要去处理发送的数据(重要参数)
                     contentType: false,   // 告诉axios不要去设置Content-Type请求头
                 }).then((response) => {
                         toastr["info"]('@_localizer["Save successfully"]');
-                        $('#category_modal').modal('toggle');
+                        $('#advertising_modal').modal('toggle');
                         reloadData();
                 })
 
@@ -206,7 +220,7 @@
         })
 
         var uploadiconbutton = document.querySelector("button[name='uploadiconbutton']");
-        var productcatalogicon = document.querySelector("#product_catalog_icon");
+        var ads_pricture = document.querySelector("#ads_picture");
         var uploadiconfileinput = document.getElementById("IconUploadedFile");
         var savebutton = document.querySelector("button[name='savebutton']");
         uploadiconbutton.addEventListener('click', (e) => {
@@ -214,28 +228,28 @@
         })
         uploadiconfileinput.onchange = () => {
             const filename = uploadiconfileinput.value.split('\\').pop();
-            const form = document.querySelector('#category_form');
+            const form = document.querySelector('#advertising_form');
             const formData = new FormData(form);
             formData.append("UploadedFile", uploadiconfileinput.files[0]);
             axios({
-                    url: '@Url.Page("/Categories/Index")?handler=Qiniu',
+                    url: '@Url.Page("/Advertisings/Index")?handler=Qiniu',
                     method: 'post',
                     data: formData,
                     processData: false,// 告诉axios不要去处理发送的数据(重要参数)
                     contentType: false,   // 告诉axios不要去设置Content-Type请求头
                 }).then((response) => {
                     const url =  response.data;
-                    $('#Input_Icon').val(url);
-                    productcatalogicon.src  = url;
+                    $('#Input_Picture').val(url);
+                    ads_pricture.src  = url;
                         toastr["info"](`${filename}:@_localizer["upload to qiniu"]`);
                 })
-           
+
             savebutton.disabled = false;
-            
+
         };
         var $dg={};
         var initdatagrid = () => {
-            $dg = $('#category_dg').datagrid({
+            $dg = $('#advertising_dg').datagrid({
                 height: 700,
                 method: 'GET',
                 rownumbers: false,
@@ -245,8 +259,8 @@
                 pagination: true,
                 clientPaging: false,
                 remoteFilter: true,
-                sortName: 'Sequence',
-                sortOrder:'asc',
+                sortName: 'Id',
+                sortOrder:'desc',
                 pageSize: 15,
                 pageList: [10, 15, 30, 50, 100, 1000],
                 onBeforeLoad: function () {
@@ -285,66 +299,64 @@
                                   </div>`;
                         }
                     },
-                    { field: 'Name', title: '@_localizer["Name"]', sortable: true, width: 260,
+                    { field: 'Category', title: '@_localizer["Category"]', sortable: true, width: 150 },
+                    { field: 'Content', title: '@_localizer["Content"]', sortable: true, width: 340,
                       formatter:function(value,row) {
-                          return `<a href="#" class="fs-lg text-dark">${value}</a>
+                          return `<a href="#" class="fs-lg text-dark">${row.Title}</a>
                                   <br>
-                                 <small class="text-muted">${row.Description}</small>
+                                 <small class="text-muted">${value}</small>
                                  `
                       }
                     },
-                   
-                    { field: 'Sequence', title: '@_localizer["Sort"]', sortable: true, width: 140 },
-                    { field: 'Icon', title: '@_localizer["Icon"]', sortable: true, width: 100,
+                    { field: 'Picture', title: '@_localizer["Picture"]', sortable: true, width: 120,
                       align: 'center',
                       formatter:function(value) {
                          return `<div class="rounded width-10 height-10 d-inline-block bg-faded shadow-1">
-                                         <img id="product_catalog_icon" src="${value}" alt="product catalog icon" />
+                                         <img id="ads_picture" src="${value}" alt="product catalog icon" />
                                  </div>`
                       }
                     },
+                    { field: 'ExpiredDate', title: '@_localizer["Expired Date"]', sortable: true, width: 150,formatter:dateformatter },
                 ]]
             })
                 .datagrid('enableFilter', {})
-                .datagrid('load', '@Url.Page("/Categories/Index")?handler=Data');
+                .datagrid('load', '@Url.Page("/Advertisings/Index")?handler=Data');
 
         }
 
         var reloadData = () => {
-            $dg.datagrid('load', '@Url.Page("/Categories/Index")?handler=Data');
+            $dg.datagrid('load', '@Url.Page("/Advertisings/Index")?handler=Data');
         }
 
-        $(() => {
-            initdatagrid();
-        })
-        var popupmodal = (category) => {
-            $('#category_modal').modal('toggle');
-            $('#category_modal .modal-title').html('@_localizer["Add Product Catalog"]');
-            $('#category_form').clearForm();
-            $('#category_form')[0].reset();
-            if (category) {
-                $('#category_modal .modal-title').html('@_localizer["Add Product Catalog"]');
-                productcatalogicon.src = category.Icon;
-                $('#category_form').jsonToForm(category, {
-                    Icon:function(v) {
-                        $('#category_form #Input_Icon').val(v);
+
+        var popupmodal = (advertising) => {
+            $('#advertising_modal').modal('toggle');
+            $('#advertising_modal .modal-title').html('@_localizer["Add Product Catalog"]');
+            $('#advertising_form').clearForm();
+            $('#advertising_form')[0].reset();
+            if (advertising) {
+                $('#advertising_modal .modal-title').html('@_localizer["Add Product Catalog"]');
+                ads_pricture.src = advertising.Icon;
+                $('#advertising_form').jsonToForm(advertising, {
+                    Picture:function(v) {
+                        $('#advertising_form #Input_Picture').val(v);
                         if(v){
-                            productcatalogicon.src = v;
+                            ads_pricture.src = v;
                         }else{
-                            productcatalogicon.src = "https://via.placeholder.com/68";
+                            ads_pricture.src = "https://via.placeholder.com/800x450.png";
                         }
                     }
                 })
             } else {
-                $('#category_form #Input_Id').val(0);
-                $('#category_form #Input_Icon').val(0);
-                productcatalogicon.src = "https://via.placeholder.com/68";
+                $('#advertising_form #Input_Id').val(0);
+                $('#advertising_form #Input_Picture').val('');
+                ads_pricture.src = "https://via.placeholder.com/800x450.png";
             }
         }
 
         var onEdit = (index) => {
-            var category = $dg.datagrid('getRows')[index];
-            popupmodal(category);
+            var advertising = $dg.datagrid('getRows')[index];
+            popupmodal(advertising);
         }
         var onDelete = (id) => {
             bootbox.confirm({
@@ -361,11 +373,11 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        axios.get('@Url.Page("/Categories/Index")?handler=Delete&id=' + id).then(res => {
+                        axios.get('@Url.Page("/Advertisings/Index")?handler=Delete&id=' + id).then(res => {
                             toastr["info"]('@_localizer["Delete successfully"]');
                             reloadData();
                         })
-                           
+
                     }
                 }
             })
@@ -387,11 +399,11 @@
                     },
                     callback: function (result) {
                         if (result) {
-                            axios.post('@Url.Page("/Categories/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
+                            axios.post('@Url.Page("/Advertisings/Index")?handler=DeleteChecked' ,{id:checkedId}).then(res => {
                                 toastr["info"](`@_localizer["Delete ${checkedId.length} successfully"]`);
                                 reloadData();
                             })
-                               
+
                         }
                     }
                 });
@@ -406,14 +418,14 @@
                 order: options.sortOrder,
             }
 
-            axios.post('@Url.Page("/Categories/Index")?handler=Export',
+            axios.post('@Url.Page("/Advertisings/Index")?handler=Export',
                 data,
                 {
                     responseType: "blob"
                 })
                 .then(response => {
                     const filename = getFileName(response.headers['content-disposition']);
-                    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officecategory.spreadsheetml.sheet;charset=utf-8' }));
+                    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officeadvertising.spreadsheetml.sheet;charset=utf-8' }));
                     const link = document.createElement('a');
                     link.href = url;
                     link.setAttribute('download', filename);
@@ -424,9 +436,9 @@
 
 
         }
-       
 
 
 
-    </script>
+
+</script>
 }
